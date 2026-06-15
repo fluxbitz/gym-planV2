@@ -72,24 +72,37 @@
   }
   .exercise-card:hover { border-color: #e94560; }
   .exercise-card .exercise-top { display: flex; gap: 14px; align-items: flex-start; flex-wrap: wrap; }
-  .equip-img {
-    width: 200px; height: 200px; flex-shrink: 0;
-    background: #0f0f1a; border-radius: 10px; overflow: hidden;
-    border: 1px solid #2a2a4a; margin-left: auto;
-    display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
-    position: relative;
+  .hoist-panel {
+    width: 200px; flex-shrink: 0; margin-left: auto;
+    background: linear-gradient(160deg, #16213e, #0f0f1a);
+    border: 1px solid #2a2a4a; border-radius: 10px;
+    padding: 12px 12px 14px;
+    display: flex; flex-direction: column; gap: 8px; align-items: stretch;
   }
-  .equip-img img {
-    width: 100%; height: 100%; object-fit: cover;
-    position: absolute; top: 0; left: 0;
-    border-radius: 10px;
+  .hoist-brand {
+    font-size: 0.7rem; font-weight: 800; letter-spacing: 1.5px;
+    color: #e94560; text-transform: uppercase;
   }
-  .equip-label {
-    font-size: 0.6rem; color: #fff; text-align: center;
-    white-space: nowrap; position: relative; z-index: 1;
-    background: rgba(0,0,0,0.7); padding: 2px 6px; border-radius: 0 0 9px 9px;
-    width: 100%;
+  .hoist-name {
+    font-size: 0.82rem; font-weight: 700; color: #fff; line-height: 1.3;
+    flex: 1;
   }
+  .hoist-btn, .video-btn {
+    text-align: center; text-decoration: none; font-size: 0.74rem;
+    font-weight: 700; padding: 7px 8px; border-radius: 7px;
+    transition: all 0.2s; display: block;
+  }
+  .hoist-btn { background: #162447; color: #4fc3f7; border: 1px solid #21406b; }
+  .hoist-btn:hover { background: #4fc3f7; color: #0f0f1a; }
+  .video-btn { background: #2a1622; color: #ff5277; border: 1px solid #5a2438; }
+  .video-btn:hover { background: #e94560; color: #fff; }
+  .ex-reset-btn {
+    background: transparent; border: 1px dashed #5a3a3a;
+    color: #c97a7a; font-size: 0.74rem; font-weight: 700;
+    padding: 6px 12px; border-radius: 8px; cursor: pointer;
+    transition: all 0.2s; margin-left: 4px;
+  }
+  .ex-reset-btn:hover { background: #e94560; color: #fff; border-color: #e94560; }
 
   .muscle-img {
     width: 90px; height: 90px; flex-shrink: 0;
@@ -392,7 +405,7 @@
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <h3>Săptămână nouă?</h3>
-    <p>Toate seturile bifate vor fi resetate. Această acțiune nu poate fi anulată.</p>
+    <p>Seturile bifate și „Ultima serie (kg)” din săptămâna curentă vor fi resetate. Greutățile de <strong>Start (kg)</strong> rămân salvate.</p>
     <div class="confirm-actions">
       <button class="timer-action-btn" id="confirmCancel">Anulează</button>
       <button class="timer-action-btn danger" id="confirmYes">Da, resetează</button>
@@ -420,61 +433,61 @@ const weeks = [
       {
         day: "Luni", name: "Chest & Triceps", muscles: "Pectorali, Triceps",
         exercises: [
-          { name: "Machine Chest Press", muscle: "Chest", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Apasă mânerele înainte, strânge pieptul la extensia completă", svg: "chest", equipImg: "Leverage_Chest_Press/0.jpg", equipName: "Chest Press" },
-          { name: "Incline Machine Press", muscle: "Upper Chest", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Reglează scaunul ca mânerele să fie la nivelul pieptului superior", svg: "chest", equipImg: "Leverage_Incline_Chest_Press/0.jpg", equipName: "Incline Press" },
-          { name: "Pec Deck Machine", muscle: "Chest (Isolation)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Apropie pernuțele lent, strânge 1 secundă", svg: "chest", equipImg: "Butterfly/0.jpg", equipName: "Pec Deck" },
-          { name: "Cable Crossovers", muscle: "Inner Chest", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge la contracția maximă, controlează revenirea", svg: "chest", equipImg: "Cable_Crossover/0.jpg", equipName: "Cable Machine" },
-          { name: "Tricep Rope Pushdowns", muscle: "Triceps (Lateral)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Desfă coarda la final, strânge tricepșii", svg: "triceps", equipImg: "Triceps_Pushdown_-_Rope_Attachment/0.jpg", equipName: "Cable Machine" },
-          { name: "Cable Overhead Tricep Ext", muscle: "Triceps (Long Head)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Întins în spate cu cablul, întindere completă", svg: "triceps", equipImg: "Cable_Rope_Overhead_Triceps_Extension/0.jpg", equipName: "Cable Machine" },
-          { name: "Tricep Dip Machine", muscle: "Triceps", sets: 3, reps: "12", rest: "45s", restSec: 45, note: "Torsul drept, apasă în jos complet", svg: "triceps", equipImg: "Dip_Machine/0.jpg", equipName: "Dip Machine" },
+          { name: "Chest Press", muscle: "Chest", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Apasă mânerele înainte, strânge pieptul la extensia completă", svg: "chest", hoist: "RS-2301 — Chest Press", handle: "rs-2301-chest-press" },
+          { name: "Incline Chest Press", muscle: "Upper Chest", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Reglează scaunul ca mânerele să fie la nivelul pieptului superior", svg: "chest", hoist: "HD-3300 — Chest/Shoulder Press (Incline)", handle: "hd-3300-chest-shoulder-press" },
+          { name: "Pec Fly (Butterfly)", muscle: "Chest (Isolation)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Apropie pernuțele lent, strânge 1 secundă", svg: "chest", hoist: "RS-2302 — Pec Fly", handle: "pec-fly" },
+          { name: "Cable Crossovers", muscle: "Inner Chest", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge la contracția maximă, controlează revenirea", svg: "chest", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Tricep Rope Pushdowns", muscle: "Triceps (Lateral)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Desfă coarda la final, strânge tricepșii", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Overhead Tricep Extension", muscle: "Triceps (Long Head)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Întins în spate cu cablul, întindere completă", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Seated Dip", muscle: "Triceps", sets: 3, reps: "12", rest: "45s", restSec: 45, note: "Torsul drept, apasă în jos complet", svg: "triceps", hoist: "RS-2101 — Seated Dip", handle: "seated-dip" },
         ]
       },
       {
         day: "Marți", name: "Back & Biceps & Forearms", muscles: "Lats, Biceps, Antebrațe",
         exercises: [
-          { name: "Lat Pulldown (Wide Grip)", muscle: "Lats", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Trage la pieptul superior, aplecă-te ușor pe spate", svg: "lats", equipImg: "Wide-Grip_Lat_Pulldown/0.jpg", equipName: "Lat Pulldown" },
-          { name: "Seated Cable Row", muscle: "Mid Back / Lats", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Trage la pieptul inferior, retrage scapulele", svg: "lats", equipImg: "Seated_Cable_Rows/0.jpg", equipName: "Cable Row" },
-          { name: "Machine Row (Chest Supported)", muscle: "Mid Back", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Împinge coatele înapoi, strânge omoplații", svg: "lats", equipImg: "Leverage_High_Row/0.jpg", equipName: "Row Machine" },
-          { name: "Straight-Arm Pulldown", muscle: "Lats (Isolation)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Brațele drepte, trage bara până la coapse", svg: "lats", equipImg: "Straight-Arm_Pulldown/0.jpg", equipName: "Cable Machine" },
-          { name: "Machine Bicep Curl", muscle: "Biceps", sets: 3, reps: "10-12", rest: "60s", restSec: 60, note: "Amplitudine completă, negativă lentă", svg: "biceps", equipImg: "Machine_Bicep_Curl/0.jpg", equipName: "Curl Machine" },
-          { name: "Cable Hammer Curls (Rope)", muscle: "Brachialis", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Priză neutră pe coardă, strânge sus", svg: "biceps", equipImg: "Cable_Hammer_Curls_-_Rope_Attachment/0.jpg", equipName: "Cable Machine" },
-          { name: "Cable Wrist Curls", muscle: "Forearms", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Antebrațele pe genunchi, rulează încheieturile sus", svg: "forearms", equipImg: "Cable_Wrist_Curl/0.jpg", equipName: "Cable Machine" },
+          { name: "Lat Pulldown (Wide Grip)", muscle: "Lats", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Trage la pieptul superior, aplecă-te ușor pe spate", svg: "lats", hoist: "RS-2201 — Lat Pulldown", handle: "rs-2201-lat-pulldown" },
+          { name: "Low Cable Row", muscle: "Mid Back / Lats", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Trage la pieptul inferior, retrage scapulele", svg: "lats", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Seated Mid Row", muscle: "Mid Back", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Împinge coatele înapoi, strânge omoplații", svg: "lats", hoist: "RS-2203 — Seated Mid Row", handle: "seated-mid-row" },
+          { name: "Straight-Arm Pulldown", muscle: "Lats (Isolation)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Brațele drepte, trage bara până la coapse", svg: "lats", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Biceps Curl", muscle: "Biceps", sets: 3, reps: "10-12", rest: "60s", restSec: 60, note: "Amplitudine completă, negativă lentă", svg: "biceps", hoist: "RS-2102 — Biceps Curl", handle: "biceps-curl" },
+          { name: "Cable Hammer Curls (Rope)", muscle: "Brachialis", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Priză neutră pe coardă, strânge sus", svg: "biceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Cable Wrist Curls", muscle: "Forearms", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Antebrațele pe genunchi, rulează încheieturile sus", svg: "forearms", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
         ]
       },
       {
         day: "Miercuri", name: "Quads, Adductors & Calves", muscles: "Cvadricepși, Adductori, Gambe, Abdomen",
         exercises: [
-          { name: "Leg Press", muscle: "Quads", sets: 4, reps: "8-10", rest: "120s", restSec: 120, note: "Picioarele la lățimea umerilor, împinge prin toată talpa", svg: "quads", equipImg: "Leg_Press/0.jpg", equipName: "Leg Press" },
-          { name: "Hack Squat Machine", muscle: "Quads", sets: 4, reps: "10-12", rest: "90s", restSec: 90, note: "Spatele lipit de pad, coboară până la paralel", svg: "quads", equipImg: "Hack_Squat/0.jpg", equipName: "Hack Squat" },
-          { name: "Leg Extension", muscle: "Quads (Isolation)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge și menține sus 1 secundă", svg: "quads", equipImg: "Leg_Extensions/0.jpg", equipName: "Leg Extension" },
-          { name: "Hip Adduction Machine", muscle: "Adductors", sets: 3, reps: "15", rest: "45s", restSec: 45, note: "Strânge picioarele înăuntru, controlează revenirea", svg: "adductors", equipImg: "Thigh_Adductor/0.jpg", equipName: "Adduction" },
-          { name: "Standing Calf Raises", muscle: "Calves (Gastrocnemius)", sets: 4, reps: "15-20", rest: "45s", restSec: 45, note: "Amplitudine completă, pauză sus", svg: "calves", equipImg: "Standing_Calf_Raises/0.jpg", equipName: "Calf Raise" },
-          { name: "Seated Calf Raise Machine", muscle: "Calves (Soleus)", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Repetări lente controlate, întindere completă jos", svg: "calves", equipImg: "Seated_Calf_Raise/0.jpg", equipName: "Calf Machine" },
-          { name: "Cable Crunches", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Îngenunchiat, curbează coastele spre pelvis", svg: "abs", equipImg: "Cable_Crunch/0.jpg", equipName: "Cable Machine" },
+          { name: "Leg Press", muscle: "Quads", sets: 4, reps: "8-10", rest: "120s", restSec: 120, note: "Picioarele la lățimea umerilor, împinge prin toată talpa", svg: "quads", hoist: "RS-2403 — Leg Press", handle: "rs-2403-leg-press" },
+          { name: "Leg Press (Narrow Stance — Quads)", muscle: "Quads", sets: 4, reps: "10-12", rest: "90s", restSec: 90, note: "Picioare apropiate jos pe platformă, coboară până la paralel", svg: "quads", hoist: "RS-2403 — Leg Press", handle: "rs-2403-leg-press" },
+          { name: "Leg Extension", muscle: "Quads (Isolation)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge și menține sus 1 secundă", svg: "quads", hoist: "RS-2401 — Leg Extension", handle: "rs-2401-leg-extension" },
+          { name: "Inner Thigh (Adductor)", muscle: "Adductors", sets: 3, reps: "15", rest: "45s", restSec: 45, note: "Strânge picioarele înăuntru, controlează revenirea", svg: "adductors", hoist: "RS-2406 — Inner Thigh", handle: "inner-thigh" },
+          { name: "Standing Calf Raises", muscle: "Calves (Gastrocnemius)", sets: 4, reps: "15-20", rest: "45s", restSec: 45, note: "Amplitudine completă, pauză sus", svg: "calves", hoist: "RS-2415 — Rotary Calf", handle: "rotary-calf" },
+          { name: "Calf Raise (Soleus Focus)", muscle: "Calves (Soleus)", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Repetări lente controlate, întindere completă jos", svg: "calves", hoist: "RS-2415 — Rotary Calf", handle: "rotary-calf" },
+          { name: "Cable Crunches", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Îngenunchiat, curbează coastele spre pelvis", svg: "abs", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
         ]
       },
       {
         day: "Joi", name: "Shoulders, Traps & Abs", muscles: "Umeri, Trapez, Abdominali",
         exercises: [
-          { name: "Machine Shoulder Press", muscle: "Front & Mid Delts", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Apasă complet sus, coboară controlat", svg: "shoulders", equipImg: "Leverage_Shoulder_Press/0.jpg", equipName: "Shoulder Press" },
-          { name: "Cable Lateral Raises", muscle: "Mid Delts", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Cablu jos, ridică la nivelul umerilor", svg: "shoulders", equipImg: "Standing_Low-Pulley_Deltoid_Raise/0.jpg", equipName: "Cable Machine" },
-          { name: "Reverse Pec Deck", muscle: "Rear Delts", sets: 3, reps: "15", rest: "60s", restSec: 60, note: "Strânge omoplații la final", svg: "shoulders", equipImg: "Reverse_Machine_Flyes/0.jpg", equipName: "Pec Deck" },
-          { name: "Cable Front Raise", muscle: "Front Delts", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Ridică până la nivelul ochilor, controlează revenirea", svg: "shoulders", equipImg: "Front_Cable_Raise/0.jpg", equipName: "Cable Machine" },
-          { name: "Smith Machine Shrugs", muscle: "Upper Traps", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Direct sus, strânge sus, fără rotire", svg: "traps", equipImg: "Smith_Machine_Behind_the_Back_Shrug/0.jpg", equipName: "Smith Machine" },
-          { name: "Machine Ab Crunch", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Curbează coastele spre pelvis, nu trage cu brațele", svg: "abs", equipImg: "Ab_Crunch_Machine/0.jpg", equipName: "Ab Machine" },
-          { name: "Cable Pallof Press", muscle: "Core / Anti-Rotation", sets: 3, reps: "12 / parte", rest: "45s", restSec: 45, note: "Împinge mânerele drept, rezistă rotației", svg: "abs", equipImg: "Pallof_Press/0.jpg", equipName: "Cable Machine" },
+          { name: "Shoulder Press", muscle: "Front & Mid Delts", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Apasă complet sus, coboară controlat", svg: "shoulders", hoist: "RS-2501 — Shoulder Press", handle: "shoulder-press" },
+          { name: "Lateral Raise", muscle: "Mid Delts", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Ridică la nivelul umerilor, mișcare controlată", svg: "shoulders", hoist: "RS-1502 — Lateral Raise", handle: "rs-1502-lateral-raise" },
+          { name: "Reverse Pec Fly (Rear Delts)", muscle: "Rear Delts", sets: 3, reps: "15", rest: "60s", restSec: 60, note: "Strânge omoplații la final", svg: "shoulders", hoist: "RS-2302 — Pec Fly (Reverse)", handle: "pec-fly" },
+          { name: "Cable Front Raise", muscle: "Front Delts", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Ridică până la nivelul ochilor, controlează revenirea", svg: "shoulders", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Cable Shrugs", muscle: "Upper Traps", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Direct sus, strânge sus, fără rotire", svg: "traps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Ab Crunch", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Curbează coastele spre pelvis, nu trage cu brațele", svg: "abs", hoist: "RS-2601 — Abdominals", handle: "rs-2601-abdominals" },
+          { name: "Cable Pallof Press", muscle: "Core / Anti-Rotation", sets: 3, reps: "12 / parte", rest: "45s", restSec: 45, note: "Împinge mânerele drept, rezistă rotației", svg: "abs", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
         ]
       },
       {
         day: "Vineri", name: "Hamstrings, Lower Back & Abductors", muscles: "Ischiogambieri, Lombari, Abductori",
         exercises: [
-          { name: "Smith Romanian Deadlift", muscle: "Hamstrings / Lower Back", sets: 4, reps: "10-12", rest: "90s", restSec: 90, note: "Împinge șoldurile înapoi, simte întinderea în ischiogambieri", svg: "hamstrings", equipImg: "Smith_Machine_Stiff-Legged_Deadlift/0.jpg", equipName: "Smith Machine" },
-          { name: "Lying Leg Curl Machine", muscle: "Hamstrings", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Eccentric lent, strânge sus", svg: "hamstrings", equipImg: "Lying_Leg_Curls/0.jpg", equipName: "Leg Curl" },
-          { name: "Seated Leg Curl Machine", muscle: "Hamstrings", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Menține contracția maximă 1 secundă", svg: "hamstrings", equipImg: "Seated_Leg_Curl/0.jpg", equipName: "Leg Curl" },
-          { name: "Back Extensions (Hyperextensions)", muscle: "Lower Back", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Ridică torsul controlat, nu hiperextinde lombarii", svg: "lowerback", equipImg: "Hyperextensions_(Back_Extensions)/0.jpg", equipName: "Hyperextension" },
-          { name: "Hip Abduction Machine", muscle: "Abductors", sets: 3, reps: "15", rest: "45s", restSec: 45, note: "Împinge genunchii în afară, controlează revenirea", svg: "abductors", equipImg: "Thigh_Abductor/0.jpg", equipName: "Abduction" },
-          { name: "Cable Pull-Through", muscle: "Hamstrings / Glutes", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Articulează din șolduri, strânge fesierii sus", svg: "hamstrings", equipImg: "Pull_Through/0.jpg", equipName: "Cable Machine" },
-          { name: "Good Morning (Smith)", muscle: "Lower Back", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Bara pe spate, înclină din șold cu spatele drept", svg: "lowerback", equipImg: "Good_Morning/0.jpg", equipName: "Smith Machine" },
+          { name: "Glute Master (Hip Extension)", muscle: "Hamstrings / Glutes", sets: 4, reps: "10-12", rest: "90s", restSec: 90, note: "Împinge șoldurile înainte, strânge fesierii și ischiogambierii", svg: "hamstrings", hoist: "RS-2412 — Glute Master", handle: "glute-master" },
+          { name: "Prone Leg Curl", muscle: "Hamstrings", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Eccentric lent, strânge sus", svg: "hamstrings", hoist: "RS-2408 — Prone Leg Curl", handle: "rs-2408-prone-leg-curl" },
+          { name: "Seated Leg Curl", muscle: "Hamstrings", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Menține contracția maximă 1 secundă", svg: "hamstrings", hoist: "RS-2402 — Leg Curl", handle: "rs-2402-leg-curl" },
+          { name: "Low Back Extension", muscle: "Lower Back", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Ridică torsul controlat, nu hiperextinde lombarii", svg: "lowerback", hoist: "RS-2204 — Low Back", handle: "low-back" },
+          { name: "Outer Thigh (Abductor)", muscle: "Abductors", sets: 3, reps: "15", rest: "45s", restSec: 45, note: "Împinge genunchii în afară, controlează revenirea", svg: "abductors", hoist: "RS-2407 — Outer Thigh", handle: "outer-thigh" },
+          { name: "Cable Pull-Through", muscle: "Hamstrings / Glutes", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Articulează din șolduri, strânge fesierii sus", svg: "hamstrings", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Cable Good Morning", muscle: "Lower Back", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Înclină din șold cu spatele drept, tensiune pe cablu", svg: "lowerback", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
         ]
       },
     ]
@@ -486,61 +499,61 @@ const weeks = [
       {
         day: "Luni", name: "Push (Chest, Shoulders, Triceps)", muscles: "Piept, Umeri, Triceps",
         exercises: [
-          { name: "Incline Machine Press", muscle: "Upper Chest", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Concentrează-te pe pieptul superior", svg: "chest", equipImg: "Leverage_Incline_Chest_Press/0.jpg", equipName: "Incline Press" },
-          { name: "Machine Chest Press", muscle: "Chest", sets: 3, reps: "10-12", rest: "75s", restSec: 75, note: "Cap lateral, presează egal cu ambele brațe", svg: "chest", equipImg: "Leverage_Chest_Press/0.jpg", equipName: "Chest Press" },
-          { name: "Machine Shoulder Press", muscle: "Shoulders", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Apasă vertical, nu blochează coatele complet", svg: "shoulders", equipImg: "Leverage_Shoulder_Press/0.jpg", equipName: "Shoulder Press" },
-          { name: "Cable Lateral Raises", muscle: "Mid Delts", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Mișcare controlată, fără elan", svg: "shoulders", equipImg: "Standing_Low-Pulley_Deltoid_Raise/0.jpg", equipName: "Cable Machine" },
-          { name: "Cable Crossovers (Low to High)", muscle: "Upper Chest", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Scripeții jos, ridică mâinile sus și împreună", svg: "chest", equipImg: "Low_Cable_Crossover/0.jpg", equipName: "Cable Machine" },
-          { name: "Tricep Bar Pushdown", muscle: "Triceps", sets: 3, reps: "10-12", rest: "60s", restSec: 60, note: "Coatele fixe, blocare completă", svg: "triceps", equipImg: "Triceps_Pushdown/0.jpg", equipName: "Cable Machine" },
-          { name: "Cable Overhead Tricep Ext", muscle: "Triceps (Long Head)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Întindere completă în spate", svg: "triceps", equipImg: "Cable_Rope_Overhead_Triceps_Extension/0.jpg", equipName: "Cable Machine" },
+          { name: "Incline Chest Press", muscle: "Upper Chest", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Concentrează-te pe pieptul superior", svg: "chest", hoist: "HD-3300 — Chest/Shoulder Press (Incline)", handle: "hd-3300-chest-shoulder-press" },
+          { name: "Chest Press", muscle: "Chest", sets: 3, reps: "10-12", rest: "75s", restSec: 75, note: "Presează egal cu ambele brațe", svg: "chest", hoist: "RS-2301 — Chest Press", handle: "rs-2301-chest-press" },
+          { name: "Shoulder Press", muscle: "Shoulders", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Apasă vertical, nu bloca coatele complet", svg: "shoulders", hoist: "RS-2501 — Shoulder Press", handle: "shoulder-press" },
+          { name: "Lateral Raise", muscle: "Mid Delts", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Mișcare controlată, fără elan", svg: "shoulders", hoist: "RS-1502 — Lateral Raise", handle: "rs-1502-lateral-raise" },
+          { name: "Cable Crossovers (Low to High)", muscle: "Upper Chest", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Scripeții jos, ridică mâinile sus și împreună", svg: "chest", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Tricep Bar Pushdown", muscle: "Triceps", sets: 3, reps: "10-12", rest: "60s", restSec: 60, note: "Coatele fixe, blocare completă", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Overhead Tricep Extension", muscle: "Triceps (Long Head)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Întindere completă în spate", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
         ]
       },
       {
         day: "Marți", name: "Pull (Lats, Traps, Biceps, Forearms)", muscles: "Lats, Trapez, Biceps, Antebrațe",
         exercises: [
-          { name: "Lat Pulldown (Close Grip)", muscle: "Lats", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Priză strânsă, trage la pieptul inferior", svg: "lats", equipImg: "V-Bar_Pulldown/0.jpg", equipName: "Lat Pulldown" },
-          { name: "Seated Cable Row (Wide)", muscle: "Mid Back / Lats", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Priză largă, strânge omoplații", svg: "lats", equipImg: "Seated_Cable_Rows/0.jpg", equipName: "Cable Row" },
-          { name: "Smith Machine Shrugs", muscle: "Upper Traps", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Ridicare verticală pură, pauză sus", svg: "traps", equipImg: "Smith_Machine_Behind_the_Back_Shrug/0.jpg", equipName: "Smith Machine" },
-          { name: "Cable Face Pulls", muscle: "Traps / Rear Delts", sets: 3, reps: "15", rest: "45s", restSec: 45, note: "Rotație externă sus, trage la frunte", svg: "traps", equipImg: "Face_Pull/0.jpg", equipName: "Cable Machine" },
-          { name: "Standing Biceps Cable Curl", muscle: "Biceps", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Tensiune constantă pe parcursul mișcării", svg: "biceps", equipImg: "Standing_Biceps_Cable_Curl/0.jpg", equipName: "Cable Machine" },
-          { name: "Machine Preacher Curl", muscle: "Biceps", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Pad-ul susține brațele, negativă lentă", svg: "biceps", equipImg: "Machine_Preacher_Curls/0.jpg", equipName: "Preacher Curl" },
-          { name: "Cable Wrist Curls", muscle: "Forearms", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Antebrațele sprijinite, doar încheietura lucrează", svg: "forearms", equipImg: "Cable_Wrist_Curl/0.jpg", equipName: "Cable Machine" },
+          { name: "Lat Pulldown (Close Grip)", muscle: "Lats", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Priză strânsă, trage la pieptul inferior", svg: "lats", hoist: "RS-2201 — Lat Pulldown", handle: "rs-2201-lat-pulldown" },
+          { name: "Seated Mid Row (Wide)", muscle: "Mid Back / Lats", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Priză largă, strânge omoplații", svg: "lats", hoist: "RS-2203 — Seated Mid Row", handle: "seated-mid-row" },
+          { name: "Cable Shrugs", muscle: "Upper Traps", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Ridicare verticală pură, pauză sus", svg: "traps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Cable Face Pulls", muscle: "Traps / Rear Delts", sets: 3, reps: "15", rest: "45s", restSec: 45, note: "Rotație externă sus, trage la frunte", svg: "traps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Standing Biceps Cable Curl", muscle: "Biceps", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Tensiune constantă pe parcursul mișcării", svg: "biceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Biceps Curl (Preacher Style)", muscle: "Biceps", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Pad-ul susține brațele, negativă lentă", svg: "biceps", hoist: "RS-2102 — Biceps Curl", handle: "biceps-curl" },
+          { name: "Cable Wrist Curls", muscle: "Forearms", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Antebrațele sprijinite, doar încheietura lucrează", svg: "forearms", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
         ]
       },
       {
         day: "Miercuri", name: "Lower Body (Quads, Hamstrings, Calves)", muscles: "Cvadricepși, Ischiogambieri, Gambe",
         exercises: [
-          { name: "Leg Press", muscle: "Quads", sets: 4, reps: "10-12", rest: "120s", restSec: 120, note: "Coboară controlat, împinge cu forță", svg: "quads", equipImg: "Leg_Press/0.jpg", equipName: "Leg Press" },
-          { name: "Lying Leg Curl", muscle: "Hamstrings", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Strânge ischiogambierii sus", svg: "hamstrings", equipImg: "Lying_Leg_Curls/0.jpg", equipName: "Leg Curl" },
-          { name: "Hack Squat Machine", muscle: "Quads", sets: 3, reps: "10-12", rest: "90s", restSec: 90, note: "Coboară până la paralel sau mai jos", svg: "quads", equipImg: "Hack_Squat/0.jpg", equipName: "Hack Squat" },
-          { name: "Seated Leg Curl", muscle: "Hamstrings", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge 1 secundă la final", svg: "hamstrings", equipImg: "Seated_Leg_Curl/0.jpg", equipName: "Leg Curl" },
-          { name: "Leg Extension", muscle: "Quads", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge cvadricepșii la final", svg: "quads", equipImg: "Leg_Extensions/0.jpg", equipName: "Leg Extension" },
-          { name: "Standing Calf Raise", muscle: "Calves", sets: 4, reps: "15-20", rest: "45s", restSec: 45, note: "Amplitudine maximă, pauză sus", svg: "calves", equipImg: "Standing_Calf_Raises/0.jpg", equipName: "Calf Raise" },
-          { name: "Seated Calf Raise", muscle: "Calves (Soleus)", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Repetări lente cu întindere completă", svg: "calves", equipImg: "Seated_Calf_Raise/0.jpg", equipName: "Calf Machine" },
+          { name: "Leg Press", muscle: "Quads", sets: 4, reps: "10-12", rest: "120s", restSec: 120, note: "Coboară controlat, împinge cu forță", svg: "quads", hoist: "RS-2403 — Leg Press", handle: "rs-2403-leg-press" },
+          { name: "Prone Leg Curl", muscle: "Hamstrings", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Strânge ischiogambierii sus", svg: "hamstrings", hoist: "RS-2408 — Prone Leg Curl", handle: "rs-2408-prone-leg-curl" },
+          { name: "Leg Press (Narrow Stance — Quads)", muscle: "Quads", sets: 3, reps: "10-12", rest: "90s", restSec: 90, note: "Picioare apropiate jos, coboară până la paralel sau mai jos", svg: "quads", hoist: "RS-2403 — Leg Press", handle: "rs-2403-leg-press" },
+          { name: "Seated Leg Curl", muscle: "Hamstrings", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge 1 secundă la final", svg: "hamstrings", hoist: "RS-2402 — Leg Curl", handle: "rs-2402-leg-curl" },
+          { name: "Leg Extension", muscle: "Quads", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge cvadricepșii la final", svg: "quads", hoist: "RS-2401 — Leg Extension", handle: "rs-2401-leg-extension" },
+          { name: "Standing Calf Raise", muscle: "Calves", sets: 4, reps: "15-20", rest: "45s", restSec: 45, note: "Amplitudine maximă, pauză sus", svg: "calves", hoist: "RS-2415 — Rotary Calf", handle: "rotary-calf" },
+          { name: "Calf Raise (Soleus Focus)", muscle: "Calves (Soleus)", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Repetări lente cu întindere completă", svg: "calves", hoist: "RS-2415 — Rotary Calf", handle: "rotary-calf" },
         ]
       },
       {
         day: "Joi", name: "Core, Lower Back & Hip", muscles: "Lombari, Abdomen, Abductori, Adductori",
         exercises: [
-          { name: "Hyperextensions", muscle: "Lower Back", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Mișcare controlată, fără hiperextensie", svg: "lowerback", equipImg: "Hyperextensions_(Back_Extensions)/0.jpg", equipName: "Hyperextension" },
-          { name: "Hip Abduction Machine", muscle: "Abductors", sets: 4, reps: "15", rest: "45s", restSec: 45, note: "Apasă în afară controlat, fără elan", svg: "abductors", equipImg: "Thigh_Abductor/0.jpg", equipName: "Abduction" },
-          { name: "Hip Adduction Machine", muscle: "Adductors", sets: 4, reps: "15", rest: "45s", restSec: 45, note: "Strânge picioarele înăuntru, pauză 1 sec", svg: "adductors", equipImg: "Thigh_Adductor/0.jpg", equipName: "Adduction" },
-          { name: "Cable Crunches", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Curbează coloana, nu folosi șoldurile", svg: "abs", equipImg: "Cable_Crunch/0.jpg", equipName: "Cable Machine" },
-          { name: "Cable Woodchops", muscle: "Obliques / Core", sets: 3, reps: "12 / parte", rest: "45s", restSec: 45, note: "Rotație din core, brațele rămân întinse", svg: "abs", equipImg: "Standing_Cable_Wood_Chop/0.jpg", equipName: "Cable Machine" },
-          { name: "Machine Ab Crunch", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Curbează coastele spre pelvis", svg: "abs", equipImg: "Ab_Crunch_Machine/0.jpg", equipName: "Ab Machine" },
-          { name: "Good Morning (Smith)", muscle: "Lower Back", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Mișcare din șold, spatele drept", svg: "lowerback", equipImg: "Good_Morning/0.jpg", equipName: "Smith Machine" },
+          { name: "Low Back Extension", muscle: "Lower Back", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Mișcare controlată, fără hiperextensie", svg: "lowerback", hoist: "RS-2204 — Low Back", handle: "low-back" },
+          { name: "Outer Thigh (Abductor)", muscle: "Abductors", sets: 4, reps: "15", rest: "45s", restSec: 45, note: "Apasă în afară controlat, fără elan", svg: "abductors", hoist: "RS-2407 — Outer Thigh", handle: "outer-thigh" },
+          { name: "Inner Thigh (Adductor)", muscle: "Adductors", sets: 4, reps: "15", rest: "45s", restSec: 45, note: "Strânge picioarele înăuntru, pauză 1 sec", svg: "adductors", hoist: "RS-2406 — Inner Thigh", handle: "inner-thigh" },
+          { name: "Cable Crunches", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Curbează coloana, nu folosi șoldurile", svg: "abs", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Rotary Torso Twist", muscle: "Obliques / Core", sets: 3, reps: "12 / parte", rest: "45s", restSec: 45, note: "Rotație din core, controlat în ambele părți", svg: "abs", hoist: "RS-2602 — Rotary Torso", handle: "rs-2602-rotary-torso" },
+          { name: "Ab Crunch", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Curbează coastele spre pelvis", svg: "abs", hoist: "RS-2601 — Abdominals", handle: "rs-2601-abdominals" },
+          { name: "Cable Good Morning", muscle: "Lower Back", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Mișcare din șold, spatele drept", svg: "lowerback", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
         ]
       },
       {
         day: "Vineri", name: "Arms & Shoulders Specialization", muscles: "Umeri, Biceps, Triceps, Antebrațe",
         exercises: [
-          { name: "Cable Lateral Raises", muscle: "Mid Delts", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Mișcare lentă, vârf de contracție", svg: "shoulders", equipImg: "Standing_Low-Pulley_Deltoid_Raise/0.jpg", equipName: "Cable Machine" },
-          { name: "Cable Front Raise", muscle: "Front Delts", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Ridică la nivelul ochilor, controlează", svg: "shoulders", equipImg: "Front_Cable_Raise/0.jpg", equipName: "Cable Machine" },
-          { name: "Reverse Pec Deck", muscle: "Rear Delts", sets: 3, reps: "15", rest: "60s", restSec: 60, note: "Strânge omoplații la spate", svg: "shoulders", equipImg: "Reverse_Machine_Flyes/0.jpg", equipName: "Pec Deck" },
-          { name: "Machine Preacher Curl", muscle: "Biceps", sets: 4, reps: "10-12", rest: "60s", restSec: 60, note: "Negativă lentă (3 secunde)", svg: "biceps", equipImg: "Machine_Preacher_Curls/0.jpg", equipName: "Preacher Curl" },
-          { name: "Cable Hammer Curls", muscle: "Biceps / Brachialis", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Priză neutră pe coardă", svg: "biceps", equipImg: "Cable_Hammer_Curls_-_Rope_Attachment/0.jpg", equipName: "Cable Machine" },
-          { name: "Tricep Rope Pushdown", muscle: "Triceps", sets: 4, reps: "10-12", rest: "60s", restSec: 60, note: "Desfă coarda la final, strânge", svg: "triceps", equipImg: "Triceps_Pushdown_-_Rope_Attachment/0.jpg", equipName: "Cable Machine" },
-          { name: "Cable Wrist Curls", muscle: "Forearms", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Doar încheietura, antebrațul fix", svg: "forearms", equipImg: "Cable_Wrist_Curl/0.jpg", equipName: "Cable Machine" },
+          { name: "Lateral Raise", muscle: "Mid Delts", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Mișcare lentă, vârf de contracție", svg: "shoulders", hoist: "RS-1502 — Lateral Raise", handle: "rs-1502-lateral-raise" },
+          { name: "Cable Front Raise", muscle: "Front Delts", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Ridică la nivelul ochilor, controlează", svg: "shoulders", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Reverse Pec Fly (Rear Delts)", muscle: "Rear Delts", sets: 3, reps: "15", rest: "60s", restSec: 60, note: "Strânge omoplații la spate", svg: "shoulders", hoist: "RS-2302 — Pec Fly (Reverse)", handle: "pec-fly" },
+          { name: "Biceps Curl (Preacher Style)", muscle: "Biceps", sets: 4, reps: "10-12", rest: "60s", restSec: 60, note: "Negativă lentă (3 secunde)", svg: "biceps", hoist: "RS-2102 — Biceps Curl", handle: "biceps-curl" },
+          { name: "Cable Hammer Curls", muscle: "Biceps / Brachialis", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Priză neutră pe coardă", svg: "biceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Tricep Rope Pushdown", muscle: "Triceps", sets: 4, reps: "10-12", rest: "60s", restSec: 60, note: "Desfă coarda la final, strânge", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
+          { name: "Cable Wrist Curls", muscle: "Forearms", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Doar încheietura, antebrațul fix", svg: "forearms", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
         ]
       },
     ]
@@ -709,7 +722,6 @@ const warmupExercises = [
   }
 ];
 
-const EQUIP_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
 const STORAGE_KEY = 'gymProgress2W';
 const WEIGHTS_KEY = 'gymWeights2W';
 
@@ -819,7 +831,12 @@ function render() {
               <span class="badge rest">Pauză ${ex.rest}</span>
             </div>
           </div>
-          <div class="equip-img" title="${ex.equipName||''}"><img src="${EQUIP_BASE}${ex.equipImg}" alt="${ex.equipName||''}" loading="lazy" onerror="this.style.display='none'"/><div class="equip-label">${ex.equipName||''}</div></div>
+          <div class="hoist-panel">
+            <div class="hoist-brand">HOIST&reg;</div>
+            <div class="hoist-name">${ex.hoist}</div>
+            <a class="hoist-btn" href="https://www.hoistfitness.com/products/${ex.handle}" target="_blank" rel="noopener">Vezi aparatul &#8599;</a>
+            <a class="video-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(ex.name + ' exercise proper form technique')}" target="_blank" rel="noopener">&#9654; Video execuție</a>
+          </div>
         </div>
         <div class="exercise-note">${ex.note}</div>
         <div class="weight-row">
@@ -839,6 +856,7 @@ function render() {
         html += `<button class="set-check${done}" data-key="${setKey}" onclick="toggleSet(this)">${done ? '&#10003;' : s}</button>`;
       }
       html += `<button class="rest-btn" onclick="startRest(${ex.restSec}, '${ex.name.replace(/'/g, "\\'")}')">&#9201; Pornire pauză ${ex.rest}</button>`;
+      html += `<button class="ex-reset-btn" onclick="resetExercise(${di}, ${ei}, ${ex.sets})" title="Resetează seturile și ultima serie — păstrează Start kg">&#x21bb; Reset exercițiu</button>`;
       html += `</div></div>`;
     });
 
@@ -928,10 +946,31 @@ const confirmOverlay = document.getElementById('confirmOverlay');
 document.getElementById('resetBtn').onclick = () => confirmOverlay.classList.add('active');
 document.getElementById('confirmCancel').onclick = () => confirmOverlay.classList.remove('active');
 document.getElementById('confirmYes').onclick = () => {
-  localStorage.removeItem(STORAGE_KEY);
+  // Resetare săptămână nouă: șterge seturile bifate + "Ultima serie" din săptămâna activă.
+  // Greutățile de Start rămân neatinse.
+  const progress = getProgress();
+  const weights = getWeights();
+  Object.keys(progress).forEach(k => { if (k.startsWith(`w${activeWeek}`)) delete progress[k]; });
+  Object.keys(weights).forEach(k => { if (k.startsWith(`last_w${activeWeek}`)) delete weights[k]; });
+  saveProgress(progress);
+  saveWeights(weights);
   confirmOverlay.classList.remove('active');
   render();
 };
+
+/* -------------- RESET PER EXERCIȚIU -------------- */
+// Resetează seturile bifate + "Ultima serie (kg)" pentru un singur exercițiu.
+// Greutatea de Start rămâne salvată.
+function resetExercise(di, ei, sets) {
+  const progress = getProgress();
+  const weights = getWeights();
+  const key = `w${activeWeek}d${di}e${ei}`;
+  for (let s = 1; s <= sets; s++) delete progress[`${key}s${s}`];
+  delete weights[`last_${key}`];
+  saveProgress(progress);
+  saveWeights(weights);
+  render();
+}
 
 /* -------------- REST TIMER -------------- */
 let timerInterval = null;
