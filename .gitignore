@@ -1,2 +1,7 @@
 .claude/
 .DS_Store
+
+# Planul personal: conține vârstă, greutate, înălțime și diagnostice.
+# Rămâne doar local — aplicația din repo e generică și se configurează din UI.
+PROGRAM.md
+NUTRITION.md

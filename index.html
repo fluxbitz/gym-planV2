@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2-Week Gym Plan</title>
+<title>12-Week Gym Plan</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f0f1a; color: #e0e0e0; min-height: 100vh; }
@@ -19,9 +19,10 @@
   header p { color: #888; font-size: 0.85rem; margin-top: 4px; }
 
   .week-switch {
-    display: flex; justify-content: center; gap: 10px;
-    padding: 12px 10px 8px; background: #0f0f1a;
-    position: sticky; top: 82px; z-index: 99;
+    display: flex; justify-content: center; align-items: center;
+    gap: 10px; flex-wrap: nowrap;
+    padding: 10px 10px 8px; background: #0f0f1a;
+    position: sticky; top: var(--hdr-h, 126px); z-index: 99;
   }
   .week-btn {
     padding: 8px 18px; border-radius: 20px; cursor: pointer;
@@ -41,7 +42,8 @@
   .tabs {
     display: flex; justify-content: center; gap: 6px;
     padding: 8px 10px 12px; flex-wrap: wrap;
-    background: #0f0f1a; position: sticky; top: 128px; z-index: 98;
+    background: #0f0f1a; z-index: 98;
+    position: sticky; top: calc(var(--hdr-h, 126px) + var(--wk-h, 52px));
   }
   .tab {
     padding: 10px 14px; border-radius: 8px; cursor: pointer;
@@ -125,6 +127,36 @@
   .badge.sets { background: #162447; color: #4fc3f7; }
   .badge.reps { background: #1b2a1b; color: #81c784; }
   .badge.rest { background: #2a1b2a; color: #ce93d8; }
+  .badge.weight {
+    background: #2a2410; color: #ffcc66;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .badge-edit {
+    background: none; border: none; color: #8a7434; cursor: pointer;
+    font-size: 0.72rem; padding: 0 2px; transition: color 0.2s;
+  }
+  .badge-edit:hover { color: #ffcc66; }
+
+  /* Variantă cu gantere / kettlebell */
+  .alt-row {
+    margin-top: 10px; padding: 10px 12px; border-radius: 8px;
+    background: #14142a; border: 1px dashed #3a3a5a;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .alt-equip {
+    flex-shrink: 0; font-size: 0.68rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: #9fa8da; background: #1c1c38;
+    padding: 4px 8px; border-radius: 6px;
+  }
+  .alt-body { flex: 1; min-width: 0; }
+  .alt-name { color: #cfd3f0; font-size: 0.84rem; font-weight: 700; }
+  .alt-video {
+    margin-left: 8px; font-size: 0.7rem; color: #ff5277;
+    text-decoration: none; font-weight: 700;
+  }
+  .alt-video:hover { text-decoration: underline; }
+  .alt-note { color: #7f849e; font-size: 0.76rem; line-height: 1.5; margin-top: 4px; }
 
   .exercise-note {
     margin-top: 10px; font-size: 0.78rem; color: #777;
@@ -369,23 +401,651 @@
   .confirm-box h3 { color: #e94560; font-size: 1.1rem; margin-bottom: 8px; }
   .confirm-box p { color: #ccc; font-size: 0.85rem; margin-bottom: 18px; line-height: 1.5; }
   .confirm-actions { display: flex; gap: 10px; justify-content: center; }
+
+  /* ===================== SETĂRI ===================== */
+  .settings-box {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 2px solid #4fc3f7; border-radius: 16px;
+    padding: 22px 24px; max-width: 520px; width: calc(100% - 32px);
+    max-height: 88vh; overflow-y: auto;
+  }
+  .settings-box h3 { color: #4fc3f7; font-size: 1.1rem; margin-bottom: 8px; }
+  .settings-intro { color: #8a93ab; font-size: 0.79rem; line-height: 1.6; margin-bottom: 16px; }
+  .settings-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px; margin-bottom: 16px;
+  }
+  .sf { display: flex; flex-direction: column; gap: 4px; }
+  .sf.wide { grid-column: 1 / -1; }
+  .sf span {
+    font-size: 0.7rem; color: #8a93ab; text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 700;
+  }
+  .sf span i { text-transform: none; letter-spacing: 0; color: #5f6880; font-style: normal; }
+  .sf input, .sf select {
+    background: #0f1626; color: #fff; border: 1px solid #2a3a55;
+    border-radius: 8px; padding: 9px 10px; font-size: 0.92rem;
+    font-weight: 700; outline: none; width: 100%; font-family: inherit;
+  }
+  .sf input:focus, .sf select:focus { border-color: #4fc3f7; }
+
+  .settings-calc {
+    background: #0f1626; border: 1px solid #23304a; border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 16px;
+  }
+  .sc-title {
+    font-size: 0.68rem; color: #7f8ba3; text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 700; margin-bottom: 10px;
+  }
+  .sc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
+  .sc-cell {
+    display: flex; flex-direction: column; gap: 2px;
+    padding: 7px 9px; border-radius: 7px; background: #131c2e;
+  }
+  .sc-cell span { font-size: 0.68rem; color: #7f8ba3; }
+  .sc-cell b { font-size: 0.9rem; color: #ccd6e6; }
+  .sc-cell.hi { background: #10241f; }
+  .sc-cell.hi b { color: #81c784; }
+  .sc-eta {
+    margin-top: 10px; padding: 9px 11px; border-radius: 8px;
+    background: rgba(79,195,247,0.08); color: #9fb3c8;
+    font-size: 0.78rem; line-height: 1.6;
+  }
+  .sc-eta b { color: #fff; }
+  .settings-wipe {
+    display: block; margin: 14px auto 0; background: none; border: none;
+    color: #6a4a55; font-size: 0.73rem; cursor: pointer; text-decoration: underline;
+  }
+  .settings-wipe:hover { color: #e94560; }
+
+  /* ===================== VIEW NAV (Antrenament / Obiceiuri) ===================== */
+  .view-nav { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+  .view-btn {
+    padding: 8px 20px; border-radius: 20px; cursor: pointer;
+    background: rgba(255,255,255,0.04); border: 1px solid #2a2a4a;
+    color: #999; font-weight: 700; font-size: 0.85rem;
+    transition: all 0.25s;
+  }
+  .view-btn:hover { color: #fff; border-color: #4fc3f7; }
+  .view-btn.active { background: #4fc3f7; color: #0f0f1a; border-color: #4fc3f7; }
+
+  /* ===================== 12-WEEK SWITCHER ===================== */
+  /* 12 pastile ar ocupa 2 rânduri pe telefon și ar mânca tot ecranul —
+     le ținem pe un singur rând derulabil orizontal. */
+  .week-pills {
+    display: flex; gap: 6px; flex-wrap: nowrap;
+    overflow-x: auto; scroll-behavior: smooth;
+    padding: 2px; scrollbar-width: none;
+  }
+  .week-pills::-webkit-scrollbar { display: none; }
+  .week-btn { flex: 0 0 auto; }
+  .reset-btn { flex: 0 0 auto; }
+  .week-btn {
+    min-width: 42px; padding: 7px 10px;
+  }
+  .week-btn.deload { border-color: #4a4a2a; color: #c9b458; }
+  .week-btn.deload.active { background: #c9b458; color: #0f0f1a; border-color: #c9b458; }
+
+  .phase-banner {
+    max-width: 700px; margin: 4px auto 6px; padding: 14px 18px;
+    border-radius: 12px; border: 1px solid #2a2a4a;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-left: 4px solid #4fc3f7;
+  }
+  .phase-banner .pb-phase {
+    color: #4fc3f7; font-size: 0.72rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .phase-banner .pb-week { color: #fff; font-size: 1.05rem; font-weight: 700; margin-top: 2px; }
+  .phase-banner .pb-focus { color: #888; font-size: 0.78rem; margin-top: 6px; line-height: 1.5; }
+  .phase-banner .pb-intent {
+    color: #ddd; font-size: 0.8rem; margin-top: 10px; line-height: 1.5;
+    padding: 8px 12px; border-radius: 8px; background: rgba(79,195,247,0.07);
+  }
+  .phase-banner.is-deload { border-left-color: #c9b458; }
+  .phase-banner.is-deload .pb-phase { color: #c9b458; }
+  .phase-banner.is-deload .pb-intent { background: rgba(201,180,88,0.09); }
+
+  /* ===================== CARDIO FINISHER ===================== */
+  .finisher-section {
+    margin-top: 22px; padding: 16px 18px; border-radius: 14px;
+    background: linear-gradient(135deg, #1e1226, #180f22);
+    border: 1px solid #3d2a4a;
+  }
+  .finisher-section h3 {
+    color: #ce93d8; font-size: 1rem; margin-bottom: 4px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .finisher-section .finisher-subtitle { font-size: 0.78rem; color: #888; margin-bottom: 14px; }
+  .finisher-card {
+    background: #150d1c; border: 1px solid #3d2a4a; border-left: 3px solid #ce93d8;
+    border-radius: 10px; padding: 12px 14px;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .finisher-card h4 { color: #fff; font-size: 0.92rem; }
+  .finisher-card p { color: #999; font-size: 0.8rem; line-height: 1.5; margin-top: 6px; }
+  .finisher-dose {
+    display: inline-block; padding: 4px 10px; border-radius: 6px;
+    background: #2a1b32; color: #ce93d8; font-size: 0.72rem; font-weight: 700; margin-top: 8px;
+  }
+  .finisher-check {
+    width: 26px; height: 26px; border-radius: 6px; border: 2px solid #3d2a4a;
+    background: transparent; color: #6a4a78; font-size: 0.7rem; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .finisher-check.done { background: #ce93d8; border-color: #ce93d8; color: #150d1c; }
+
+  /* ===================== HABITS ===================== */
+  .habits-wrap { max-width: 700px; margin: 0 auto; padding: 18px 16px 60px; }
+  .habits-head { text-align: center; margin-bottom: 22px; }
+  .habits-head h2 { color: #4fc3f7; font-size: 1.25rem; }
+  .habits-head .habits-date { color: #888; font-size: 0.82rem; margin-top: 6px; }
+
+  .habit-card {
+    background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 14px;
+    padding: 16px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 14px;
+    transition: border-color 0.25s, transform 0.25s, background 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .habit-card:hover { border-color: #3a3a5a; }
+  .habit-card.done { border-color: #2e7d55; background: linear-gradient(135deg, #16241e, #14201c); }
+
+  .habit-icon { font-size: 1.6rem; flex-shrink: 0; width: 34px; text-align: center; }
+
+  .habit-body { flex: 1; min-width: 0; }
+  .habit-name {
+    color: #fff; font-size: 0.95rem; font-weight: 700;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .habit-card.done .habit-name { color: #81c784; }
+  .habit-edit {
+    background: none; border: none; color: #555; cursor: pointer;
+    font-size: 0.8rem; padding: 2px 4px; border-radius: 4px; transition: color 0.2s;
+  }
+  .habit-edit:hover { color: #4fc3f7; }
+
+  .habit-meta { display: flex; align-items: center; gap: 12px; margin-top: 8px; flex-wrap: wrap; }
+  .habit-streak {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px; border-radius: 20px;
+    background: #251a10; color: #ffb74d;
+    font-size: 0.75rem; font-weight: 800;
+  }
+  .habit-streak.zero { background: #1f1f2e; color: #666; }
+  .habit-streak.full {
+    background: linear-gradient(135deg, #3a2410, #4a2c10);
+    color: #ffcc66; box-shadow: 0 0 12px rgba(255,183,77,0.25);
+  }
+
+  .habit-dots { display: flex; gap: 5px; }
+  .habit-dot {
+    width: 13px; height: 13px; border-radius: 4px;
+    background: #23233a; border: 1px solid #2f2f4a;
+    transition: all 0.25s;
+  }
+  .habit-dot.filled { background: #4caf72; border-color: #4caf72; }
+  .habit-dot.today { box-shadow: 0 0 0 2px rgba(79,195,247,0.5); }
+
+  /* --- the satisfying checkbox --- */
+  .habit-check {
+    width: 46px; height: 46px; flex-shrink: 0;
+    border-radius: 14px; border: 2px solid #3a3a5a;
+    background: #14142a; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.25s, border-color 0.25s;
+    position: relative; outline: none;
+  }
+  .habit-check:hover { border-color: #4fc3f7; }
+  .habit-check:active { transform: scale(0.92); }
+  .habit-check svg { width: 26px; height: 26px; overflow: visible; }
+  .habit-check svg path {
+    fill: none; stroke: #4caf72; stroke-width: 3.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 30; stroke-dashoffset: 30;
+    transition: stroke-dashoffset 0.25s ease;
+  }
+  .habit-check.done { background: #1d3a2a; border-color: #4caf72; }
+  .habit-check.done svg path { stroke-dashoffset: 0; }
+
+  .habit-check.pop { animation: habitPop 0.42s cubic-bezier(0.22, 1.3, 0.36, 1); }
+  @keyframes habitPop {
+    0%   { transform: scale(1); }
+    35%  { transform: scale(1.22); }
+    65%  { transform: scale(0.93); }
+    100% { transform: scale(1); }
+  }
+
+  /* expanding ring on complete */
+  .habit-check .ring {
+    position: absolute; inset: -2px; border-radius: 14px;
+    border: 2px solid #4caf72; opacity: 0;
+    pointer-events: none;
+  }
+  .habit-check.pop .ring { animation: habitRing 0.55s ease-out; }
+  @keyframes habitRing {
+    0%   { transform: scale(1);   opacity: 0.9; }
+    100% { transform: scale(1.9); opacity: 0; }
+  }
+
+  /* particle burst */
+  .habit-particle {
+    position: absolute; width: 6px; height: 6px; border-radius: 50%;
+    pointer-events: none; opacity: 1;
+    animation: habitBurst 0.6s ease-out forwards;
+  }
+  @keyframes habitBurst {
+    0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+  }
+
+  .habits-summary {
+    margin-top: 20px; padding: 16px 18px; border-radius: 14px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid #2a2a4a; text-align: center;
+  }
+  .habits-summary .hs-count { color: #4fc3f7; font-size: 1.8rem; font-weight: 800; }
+  .habits-summary .hs-label { color: #888; font-size: 0.8rem; margin-top: 2px; }
+  .habits-summary .hs-note { color: #777; font-size: 0.76rem; margin-top: 10px; line-height: 1.5; }
+
+  /* Când faci cei 10.000 de pași */
+  .steps-card {
+    margin-top: 18px; padding: 16px 18px; border-radius: 14px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid #2a2a4a; border-left: 4px solid #81c784;
+  }
+  .steps-card h3 { color: #81c784; font-size: 0.98rem; margin-bottom: 6px; }
+  .steps-sub { color: #999; font-size: 0.81rem; line-height: 1.6; margin-bottom: 14px; }
+  .steps-sub b { color: #ddd; }
+  .step-row {
+    display: flex; gap: 12px; align-items: flex-start;
+    padding: 10px 0; border-bottom: 1px solid #23233a;
+  }
+  .step-row:last-of-type { border-bottom: none; }
+  .step-when {
+    flex-shrink: 0; width: 88px; display: flex; flex-direction: column; gap: 2px;
+  }
+  .step-time { color: #81c784; font-size: 0.8rem; font-weight: 800; }
+  .step-dur { color: #666; font-size: 0.7rem; font-weight: 600; }
+  .step-body { flex: 1; min-width: 0; }
+  .step-label { color: #fff; font-size: 0.85rem; font-weight: 700; }
+  .step-count {
+    display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 10px;
+    background: #1d3a2a; color: #81c784; font-size: 0.7rem; font-weight: 800;
+  }
+  .step-why { color: #7f849e; font-size: 0.78rem; line-height: 1.5; margin-top: 4px; }
+  .steps-total {
+    margin-top: 12px; padding: 9px 12px; border-radius: 8px;
+    background: rgba(129,199,132,0.08); color: #9fb8a3; font-size: 0.8rem;
+  }
+  .steps-total b { color: #fff; }
+  .steps-warn {
+    margin-top: 10px; padding: 10px 12px; border-radius: 8px;
+    background: rgba(255,183,77,0.08); border-left: 3px solid #ffb74d;
+    color: #b9a67f; font-size: 0.79rem; line-height: 1.55;
+  }
+  .steps-warn b { color: #ffcc66; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .habit-check.pop, .habit-check.pop .ring, .habit-particle { animation: none; }
+  }
+
+  /* ===================== DATA ===================== */
+  .date-bar {
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; margin-top: 10px; flex-wrap: wrap;
+    font-size: 0.78rem;
+  }
+  .date-today { color: #e0e0e0; font-weight: 700; text-transform: capitalize; }
+  .date-sep { color: #555; }
+  .date-dayno { color: #4fc3f7; font-weight: 700; }
+  .date-edit {
+    background: none; border: 1px solid #2a2a4a; color: #777;
+    cursor: pointer; font-size: 0.72rem; padding: 2px 7px;
+    border-radius: 6px; transition: all 0.2s;
+  }
+  .date-edit:hover { color: #4fc3f7; border-color: #4fc3f7; }
+
+  .phase-banner .pb-dates { color: #8fa0b8; font-size: 0.76rem; margin-top: 6px; font-weight: 600; }
+  .pb-now {
+    display: inline-block; margin-left: 6px; padding: 1px 8px; border-radius: 10px;
+    background: #4fc3f7; color: #0f0f1a; font-size: 0.66rem; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .day-header .day-date { color: #8fa0b8; font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; }
+  .day-today-badge {
+    display: inline-block; margin-left: 6px; padding: 1px 7px; border-radius: 10px;
+    background: #e94560; color: #fff; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.5px;
+  }
+  .tab.is-today { border-color: #4fc3f7; }
+  .tab.is-today .day-label { color: #4fc3f7; opacity: 1; font-weight: 700; }
+
+  /* ===================== ALERGARE ===================== */
+  .run-wrap { max-width: 700px; margin: 0 auto; padding: 18px 16px 60px; }
+  .run-head { text-align: center; margin-bottom: 18px; }
+  .run-head h2 { color: #81c784; font-size: 1.3rem; }
+  .run-head .run-sub { color: #888; font-size: 0.8rem; margin-top: 6px; }
+  .run-global { margin-top: 14px; }
+  .run-global-bar {
+    max-width: 420px; margin: 0 auto 6px; height: 8px;
+    background: #1a1a2e; border-radius: 4px; overflow: hidden;
+  }
+  .run-global-fill {
+    height: 100%; background: linear-gradient(90deg, #4fc3f7, #81c784, #ffb74d, #e94560);
+    border-radius: 4px; transition: width 0.4s;
+  }
+  .run-global-text { color: #888; font-size: 0.76rem; font-weight: 600; }
+
+  .run-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; background: #1a1a2e; border: 1px solid #2a2a4a;
+    border-radius: 12px; padding: 10px 12px; margin-bottom: 8px;
+  }
+  .run-nav-btn {
+    width: 38px; height: 38px; flex-shrink: 0; border-radius: 10px;
+    background: #14142a; border: 1px solid #2a2a4a; color: #4fc3f7;
+    font-size: 1.1rem; cursor: pointer; transition: all 0.2s;
+  }
+  .run-nav-btn:hover:not(:disabled) { background: #4fc3f7; color: #0f0f1a; }
+  .run-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .run-nav-label { text-align: center; flex: 1; }
+  .run-nav-week { color: #fff; font-weight: 700; font-size: 0.95rem; }
+  .run-nav-dates { color: #8fa0b8; font-size: 0.74rem; margin-top: 3px; font-weight: 600; }
+  .run-jump {
+    display: block; margin: 0 auto 14px; padding: 6px 14px; border-radius: 20px;
+    background: transparent; border: 1px solid #4fc3f7; color: #4fc3f7;
+    font-size: 0.76rem; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  }
+  .run-jump:hover { background: #4fc3f7; color: #0f0f1a; }
+
+  .run-phase {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid #2a2a4a; border-left: 4px solid #4fc3f7;
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .run-phase-label { font-size: 0.74rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; }
+  .run-phase-why { color: #aaa; font-size: 0.82rem; line-height: 1.6; margin-top: 8px; }
+  .run-phase-days { color: #81c784; font-size: 0.78rem; font-weight: 700; margin-top: 10px; }
+
+  .run-nosession {
+    background: linear-gradient(135deg, #16213e, #12192e);
+    border: 1px dashed #2a4a6a; border-radius: 14px;
+    padding: 22px 18px; text-align: center; margin-bottom: 16px;
+  }
+  .run-nosession-icon { font-size: 2rem; margin-bottom: 8px; }
+  .run-nosession h3 { color: #4fc3f7; font-size: 1rem; margin-bottom: 10px; }
+  .run-nosession p { color: #999; font-size: 0.82rem; line-height: 1.6; }
+  .run-nosession-why { margin-top: 10px; color: #777; font-size: 0.78rem; }
+
+  /* Setări bandă */
+  .tread-card {
+    background: linear-gradient(135deg, #16213e, #121a2e);
+    border: 1px solid #2a4a6a; border-left: 4px solid #4fc3f7;
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .tread-card h3 { color: #4fc3f7; font-size: 0.95rem; margin-bottom: 12px; }
+  .tread-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .tread-cell {
+    background: #0f1626; border: 1px solid #23304a; border-radius: 10px;
+    padding: 10px 12px; display: flex; flex-direction: column; gap: 3px;
+  }
+  .tread-lab {
+    font-size: 0.66rem; color: #7f8ba3; text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 700;
+  }
+  .tread-val { font-size: 1.05rem; color: #fff; font-weight: 800; }
+  .tread-val.run { color: #4fc3f7; }
+  .tread-total {
+    margin-top: 12px; padding: 8px 12px; border-radius: 8px;
+    background: rgba(79,195,247,0.07); color: #9fb3c8; font-size: 0.78rem;
+  }
+  .tread-total b { color: #fff; }
+  .tread-tip { margin-top: 10px; color: #7f8ba3; font-size: 0.78rem; line-height: 1.55; }
+
+  .run-sessions { margin-bottom: 16px; }
+  .run-sessions h3, .run-gate h3, .run-rules h3, .run-map h3 {
+    color: #fff; font-size: 0.95rem; margin-bottom: 10px;
+  }
+  .run-session {
+    background: #1a1a2e; border: 1px solid #2a2a4a; border-left: 3px solid #81c784;
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .run-session.done { background: linear-gradient(135deg, #16241e, #14201c); border-color: #2e7d55; }
+  .run-session-day {
+    flex-shrink: 0; min-width: 76px; color: #81c784;
+    font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .run-session-body { flex: 1; min-width: 150px; }
+  .run-session-main { color: #fff; font-size: 0.92rem; font-weight: 700; }
+  .run-session-detail { color: #888; font-size: 0.78rem; margin-top: 4px; line-height: 1.5; }
+  .run-check {
+    width: 40px; height: 40px; flex-shrink: 0; border-radius: 12px;
+    border: 2px solid #3a3a5a; background: #14142a; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.25s;
+  }
+  .run-check:hover { border-color: #81c784; }
+  .run-check svg { width: 22px; height: 22px; overflow: visible; }
+  .run-check svg path {
+    fill: none; stroke: #4caf72; stroke-width: 3.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 30; stroke-dashoffset: 30; transition: stroke-dashoffset 0.25s ease;
+  }
+  .run-check.done { background: #1d3a2a; border-color: #4caf72; }
+  .run-check.done svg path { stroke-dashoffset: 0; }
+  .run-check.pop { animation: habitPop 0.42s cubic-bezier(0.22, 1.3, 0.36, 1); }
+  .run-warmup {
+    color: #777; font-size: 0.76rem; line-height: 1.5;
+    padding: 8px 12px; border-left: 2px solid #333; margin-top: 4px;
+  }
+
+  .run-gate {
+    background: linear-gradient(135deg, #12221c, #101d18);
+    border: 1px solid #2a4a3a; border-radius: 14px;
+    padding: 16px 18px; margin-bottom: 16px;
+  }
+  .run-gate h3 { color: #81c784; }
+  .run-gate-sub { color: #888; font-size: 0.79rem; line-height: 1.6; margin-bottom: 10px; }
+  .run-gate ul { list-style: none; }
+  .run-gate li {
+    color: #ddd; font-size: 0.83rem; padding: 7px 0 7px 24px;
+    position: relative; line-height: 1.5;
+  }
+  .run-gate li::before {
+    content: '☐'; position: absolute; left: 0; color: #81c784; font-size: 1rem;
+  }
+
+  .run-rules { margin-bottom: 16px; }
+  .run-rule {
+    background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 8px; display: flex; gap: 12px; align-items: flex-start;
+  }
+  .run-rule-icon { font-size: 1.2rem; flex-shrink: 0; }
+  .run-rule-title { color: #fff; font-size: 0.86rem; font-weight: 700; }
+  .run-rule-text { color: #999; font-size: 0.79rem; line-height: 1.55; margin-top: 4px; }
+
+  .run-map-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(38px, 1fr));
+    gap: 6px; margin-bottom: 12px;
+  }
+  .run-map-cell {
+    aspect-ratio: 1; border-radius: 8px; border: 1px solid #2a2a4a;
+    background: #14142a; color: #888; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.74rem; font-weight: 700; transition: all 0.2s;
+  }
+  .run-map-cell:hover { background: #1f1f3a; color: #fff; }
+  .run-map-cell.current { background: #4fc3f7; color: #0f0f1a; font-weight: 800; }
+  .run-map-cell.done { background: #1d3a2a; color: #81c784; }
+  .run-legend { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .run-legend-item { color: #888; font-size: 0.72rem; display: inline-flex; align-items: center; gap: 5px; }
+  .run-legend-item i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+
+  /* ===================== MENIU ===================== */
+  .food-wrap { max-width: 700px; margin: 0 auto; padding: 18px 16px 60px; }
+  .food-head { text-align: center; margin-bottom: 16px; }
+  .food-head h2 { color: #ffb74d; font-size: 1.3rem; }
+  .food-head .food-sub { color: #888; font-size: 0.8rem; margin-top: 6px; }
+
+  .food-days { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-bottom: 14px; }
+  .food-day {
+    min-width: 46px; padding: 8px 10px; border-radius: 8px; cursor: pointer;
+    background: #1a1a2e; border: 1px solid #2a2a4a; color: #aaa;
+    font-size: 0.78rem; font-weight: 700; transition: all 0.2s;
+  }
+  .food-day:hover { border-color: #ffb74d; color: #fff; }
+  .food-day.today { border-color: #4fc3f7; }
+  .food-day.active { background: #ffb74d; color: #1a1008; border-color: #ffb74d; }
+
+  .food-summary {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid #2a2a4a; border-left: 4px solid #ffb74d;
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 14px;
+  }
+  .food-day-title { color: #fff; font-size: 1rem; font-weight: 700; }
+  .food-macros { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+  .fm { font-size: 0.78rem; color: #888; }
+  .fm b { font-size: 0.95rem; }
+  .fm.kcal b { color: #ffb74d; }
+  .fm.p b { color: #81c784; }
+  .fm.c b { color: #4fc3f7; }
+  .fm.f b { color: #ce93d8; }
+
+  .meal-card, .sup-card {
+    background: #1a1a2e; border: 1px solid #2a2a4a; border-left: 3px solid #ffb74d;
+    border-radius: 12px; padding: 14px 16px; margin-bottom: 12px;
+  }
+  .meal-card.done, .sup-card.done {
+    background: linear-gradient(135deg, #16241e, #14201c); border-color: #2e7d55; border-left-color: #4caf72;
+  }
+  .sup-card { border-left-color: #ce93d8; }
+  .meal-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .meal-time {
+    display: inline-block; background: #2a2410; color: #ffcc66;
+    padding: 3px 9px; border-radius: 6px; font-size: 0.74rem; font-weight: 800; margin-right: 8px;
+  }
+  .meal-name { color: #fff; font-size: 0.95rem; font-weight: 700; }
+  .meal-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+  .meal-kcal { color: #888; font-size: 0.74rem; font-weight: 600; }
+  .meal-check {
+    width: 36px; height: 36px; flex-shrink: 0; border-radius: 10px;
+    border: 2px solid #3a3a5a; background: #14142a; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.25s;
+  }
+  .meal-check:hover { border-color: #4caf72; }
+  .meal-check svg { width: 20px; height: 20px; overflow: visible; }
+  .meal-check svg path {
+    fill: none; stroke: #4caf72; stroke-width: 3.5;
+    stroke-linecap: round; stroke-linejoin: round;
+    stroke-dasharray: 30; stroke-dashoffset: 30; transition: stroke-dashoffset 0.25s ease;
+  }
+  .meal-check.done { background: #1d3a2a; border-color: #4caf72; }
+  .meal-check.done svg path { stroke-dashoffset: 0; }
+  .meal-check.pop { animation: habitPop 0.42s cubic-bezier(0.22, 1.3, 0.36, 1); }
+
+  .meal-items { list-style: none; margin-top: 12px; }
+  .meal-items li {
+    color: #ddd; font-size: 0.85rem; padding: 5px 0 5px 18px;
+    position: relative; line-height: 1.45;
+  }
+  .meal-items li::before { content: '•'; position: absolute; left: 4px; color: #ffb74d; }
+  .meal-micro {
+    margin-top: 10px; padding: 8px 12px; border-radius: 8px;
+    background: rgba(255,183,77,0.07); color: #bba77a;
+    font-size: 0.77rem; line-height: 1.5;
+  }
+
+  /* Acoperirea micronutrienților */
+  .micro-card {
+    background: linear-gradient(135deg, #12221c, #101d18);
+    border: 1px solid #2a4a3a; border-radius: 14px;
+    padding: 16px 18px; margin-top: 18px;
+  }
+  .micro-card h3 { color: #81c784; font-size: 0.95rem; margin-bottom: 6px; }
+  .micro-sub { color: #888; font-size: 0.79rem; line-height: 1.55; margin-bottom: 12px; }
+  .micro-list { display: grid; gap: 6px; }
+  .micro-item { display: flex; gap: 10px; align-items: flex-start; font-size: 0.79rem; }
+  .micro-dot {
+    flex-shrink: 0; width: 18px; height: 18px; border-radius: 50%;
+    background: #1d3a2a; color: #81c784; font-size: 0.68rem; font-weight: 800;
+    display: flex; align-items: center; justify-content: center; margin-top: 2px;
+  }
+  .micro-item.gap .micro-dot { background: #3a2a10; color: #ffb74d; }
+  .micro-n { color: #ddd; font-weight: 700; display: block; }
+  .micro-src { color: #7f8f85; display: block; line-height: 1.45; margin-top: 1px; }
+  .micro-item.gap .micro-n { color: #ffb74d; }
+  .micro-warn {
+    margin-top: 14px; padding: 12px 14px; border-radius: 10px;
+    background: rgba(255,183,77,0.08); border-left: 3px solid #ffb74d;
+    color: #b9a67f; font-size: 0.79rem; line-height: 1.65;
+  }
+  .micro-warn b { color: #ffcc66; }
+
+  .food-rules { margin-top: 18px; }
+  .food-rules h3 { color: #fff; font-size: 0.95rem; margin-bottom: 10px; }
+  .food-rule {
+    background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px;
+    padding: 11px 14px; margin-bottom: 8px;
+    color: #999; font-size: 0.8rem; line-height: 1.6;
+  }
+  .food-rule b { color: #ddd; }
+
+  /* Pe telefon barele lipicioase (header + săptămâni + zile) ar ocupa
+     jumătate de ecran — le compactăm ca să rămână loc de antrenament. */
+  @media (max-width: 600px) {
+    header { padding: 12px 14px 10px; }
+    header h1 { font-size: 1.15rem; }
+    header p { font-size: 0.72rem; }
+    .view-nav { margin-top: 10px; }
+    .view-btn { padding: 6px 12px; font-size: 0.74rem; }
+    .date-bar { margin-top: 8px; font-size: 0.7rem; gap: 6px; }
+    .week-switch { padding: 8px 8px 6px; }
+    .week-btn { min-width: 36px; padding: 6px 8px; font-size: 0.78rem; }
+    .reset-btn { padding: 6px 10px; font-size: 0.72rem; }
+    .tabs { padding: 6px 8px 8px; gap: 5px; }
+    .tab { padding: 7px 10px; font-size: 0.72rem; }
+    .hoist-panel { width: 100%; margin-left: 0; }
+  }
 </style>
 </head>
 <body>
 
 <header>
-  <h1>2-WEEK GYM PLAN</h1>
-  <p>14 Muscle Groups &bull; 5 Days/Week &bull; 1 Hour/Session</p>
+  <h1>12-WEEK GYM PLAN</h1>
+  <p id="headerSub">&mdash;</p>
+  <div class="date-bar">
+    <span class="date-today" id="dateToday">—</span>
+    <span class="date-sep">&bull;</span>
+    <span class="date-dayno" id="dateDayNo">—</span>
+    <button class="date-edit" id="settingsBtn" title="Setări: datele tale și data de start">&#9881; Setări</button>
+  </div>
+  <div class="view-nav">
+    <button class="view-btn active" id="viewTrainingBtn">&#127947; Antrenament</button>
+    <button class="view-btn" id="viewRunBtn">&#127939; Alergare</button>
+    <button class="view-btn" id="viewFoodBtn">&#127869; Meniu</button>
+    <button class="view-btn" id="viewHabitsBtn">&#9989; Obiceiuri</button>
+  </div>
 </header>
 
-<div class="week-switch">
-  <button class="week-btn active" id="week1Btn">Săptămâna 1</button>
-  <button class="week-btn" id="week2Btn">Săptămâna 2</button>
-  <button class="reset-btn" id="resetBtn" title="Reset progres pentru săptămâna nouă">&#x21bb; Reset Săptămână Nouă</button>
+<div id="runView" style="display:none"></div>
+<div id="foodView" style="display:none"></div>
+
+<div id="trainingView">
+  <div class="week-switch">
+    <div class="week-pills" id="weekPills"></div>
+    <button class="reset-btn" id="resetBtn" title="Reset progres pentru săptămâna nouă">&#x21bb; Reset Săptămână</button>
+  </div>
+
+  <div class="phase-banner" id="phaseBanner"></div>
+  <div class="tabs" id="tabs"></div>
+  <div id="content"></div>
 </div>
 
-<div class="tabs" id="tabs"></div>
-<div id="content"></div>
+<div id="habitsView" style="display:none"></div>
 
 <!-- Rest Timer Modal -->
 <div class="timer-overlay" id="timerOverlay">
@@ -398,6 +1058,37 @@
       <button class="timer-action-btn" id="timerSub">-15s</button>
       <button class="timer-action-btn danger" id="timerSkip">Skip</button>
     </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="confirm-overlay" id="settingsOverlay">
+  <div class="settings-box">
+    <h3>&#9881; Datele tale</h3>
+    <p class="settings-intro">
+      Rămân doar pe acest dispozitiv, în memoria browserului. Nu pleacă nicăieri și nu sunt
+      salvate în cod — de asta aplicația poate fi publicată public fără să spună nimic despre tine.
+    </p>
+
+    <div class="settings-grid">
+      <label class="sf"><span>Nume <i>(opțional)</i></span><input type="text" id="cfgName" placeholder="—"></label>
+      <label class="sf"><span>Vârstă</span><input type="number" id="cfgAge" min="16" max="99"></label>
+      <label class="sf"><span>Sex</span>
+        <select id="cfgSex"><option value="m">Masculin</option><option value="f">Feminin</option></select>
+      </label>
+      <label class="sf"><span>Înălțime (cm)</span><input type="number" id="cfgHeight" min="130" max="220"></label>
+      <label class="sf"><span>Greutate acum (kg)</span><input type="number" id="cfgWeight" min="35" max="250" step="0.5"></label>
+      <label class="sf"><span>Greutate țintă (kg)</span><input type="number" id="cfgTarget" min="35" max="250" step="0.5"></label>
+      <label class="sf wide"><span>Data de start a programului</span><input type="text" id="cfgStart" placeholder="zi/lună/an"></label>
+    </div>
+
+    <div class="settings-calc" id="settingsCalc"></div>
+
+    <div class="confirm-actions">
+      <button class="timer-action-btn" id="settingsCancel">Anulează</button>
+      <button class="timer-action-btn" id="settingsSave">Salvează</button>
+    </div>
+    <button class="settings-wipe" id="settingsWipe">Șterge toate datele mele din acest browser</button>
   </div>
 </div>
 
@@ -425,140 +1116,191 @@
    abdominals, quadriceps, hamstrings, calves, abductors,
    adductors, biceps, triceps, forearms
    ============================================================ */
-const weeks = [
-  /* ---------------------- WEEK 1 ---------------------- */
+/* ============================================================
+   PROGRAM 12 SĂPTĂMÂNI — 5 zile/săptămână · 60 min/sesiune
+   Doar aparate HOIST. Adaptat pentru: nerv sciatic, genunchi, șolduri.
+
+   Structura NU e scrisă săptămână cu săptămână de mână — se
+   generează din: biblioteca de exerciții (EX) + șabloanele de fază
+   (PHASES) + schema săptămânală (WEEK_SCHEME). Rezultatul are exact
+   aceeași formă ca vechiul array `weeks`, deci render() rămâne la fel.
+   ============================================================ */
+
+/* Biblioteca de exerciții.
+   `base` = greutatea de pornire recomandată (kg) la nivel intermediar,
+   la 12-15 repetări — punctul de plecare al fazei 1. Se personalizează
+   din interfață (butonul ✎ de pe fiecare exercițiu).
+   Toate încărcăturile de mai jos sunt intenționat conservatoare pentru
+   genunchi / șold / sciatic; le calibrezi în săptămâna 1.
+   `step`  = incrementul realist al aparatului (2,5 kg sau 5 kg).
+   `alt`   = varianta cu gantere / kettlebell, când aparatul e ocupat. */
+const EX = {
+  /* ---- Piept / Triceps ---- */
+  chestPress:    { name:"Chest Press", muscle:"Chest", svg:"chest", hoist:"RS-2301 — Chest Press", handle:"rs-2301-chest-press", base:40, step:2.5, note:"Coatele la ~45° față de trunchi, nu evazate. Coborâre controlată 2 secunde.", alt:{ equip:"Gantere", name:"Dumbbell Bench Press", note:"Culcat pe bancă plată. Coatele la 45°, nu lăsa ganterele să coboare sub linia pieptului." } },
+  inclinePress:  { name:"Incline Chest Press", muscle:"Upper Chest", svg:"chest", hoist:"HD-3300 — Chest/Shoulder Press (Incline)", handle:"hd-3300-chest-shoulder-press", base:35, step:2.5, note:"Scaunul reglat ca mânerele să fie la nivelul claviculei. Coastele jos, fără arcuire lombară.", alt:{ equip:"Gantere", name:"Incline Dumbbell Press", note:"Bancă la 30°, nu mai mult — peste 45° devine exercițiu de umeri." } },
+  pecFly:        { name:"Pec Fly (Butterfly)", muscle:"Chest (Isolation)", svg:"chest", hoist:"RS-2302 — Pec Fly", handle:"pec-fly", base:30, step:2.5, note:"Coatele ușor flexate, apropie pernuțele lent și strânge 1 secundă.", alt:{ equip:"Gantere", name:"Dumbbell Fly pe bancă", note:"Coatele ușor îndoite și FIXE. Greutate mică — e un exercițiu de întindere, nu de forță." } },
+  crossover:     { name:"Cable Crossovers", muscle:"Inner Chest", svg:"chest", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:12.5, step:2.5, note:"Trunchiul stabil, fără avânt din șolduri. Strânge la contracția maximă.", alt:{ equip:"Gantere", name:"Dumbbell Squeeze Press", note:"Două gantere lipite una de alta, apeși constant una în cealaltă pe tot parcursul mișcării." } },
+  seatedDip:     { name:"Seated Dip", muscle:"Triceps", svg:"triceps", hoist:"RS-2101 — Seated Dip", handle:"seated-dip", base:45, step:5, note:"Torsul drept, umerii jos și în spate, apasă complet în jos.", alt:{ equip:"Gantere", name:"Dumbbell Skull Crusher", note:"Culcat pe bancă, coboară ganterele lateral de urechi. Coatele rămân fixe." } },
+  pushdown:      { name:"Tricep Rope Pushdowns", muscle:"Triceps (Lateral)", svg:"triceps", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:22.5, step:2.5, note:"Coatele lipite de corp, desfă coarda la final și strânge.", alt:{ equip:"Gantere", name:"Dumbbell Kickback", note:"Sprijinit cu o mână pe bancă, spatele PLAT. Doar antebrațul se mișcă." } },
+  overheadExt:   { name:"Overhead Tricep Extension", muscle:"Triceps (Long Head)", svg:"triceps", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:17.5, step:2.5, note:"Întindere completă în spate, coatele aproape de cap. Nu lăsa lombarii să se arcuiască.", alt:{ equip:"Kettlebell", name:"KB Overhead Triceps Extension", note:"Kettlebell ținut cu ambele mâini de coarne, deasupra capului. Așezat, cu spătar — protejează lombarii." } },
+
+  /* ---- Spate / Biceps / Antebrațe ---- */
+  latPulldown:   { name:"Lat Pulldown (Wide Grip)", muscle:"Lats", svg:"lats", hoist:"RS-2201 — Lat Pulldown", handle:"rs-2201-lat-pulldown", base:45, step:5, note:"Trage la pieptul superior, coatele în jos. Fără legănare din lombari (protecție sciatic).", alt:{ equip:"Gantere", name:"Dumbbell Pullover pe bancă", note:"Culcat transversal pe bancă, o gantera ținută cu ambele mâini. Amplitudine mare, greutate moderată." } },
+  midRow:        { name:"Seated Mid Row", muscle:"Mid Back", svg:"lats", hoist:"RS-2203 — Seated Mid Row", handle:"seated-mid-row", base:45, step:5, note:"Pieptul pe pernă, împinge coatele înapoi, strânge omoplații 1 secundă.", alt:{ equip:"Gantere", name:"Chest-Supported Dumbbell Row", note:"Culcat cu pieptul pe o bancă înclinată la 30°. Cea mai bună variantă pentru tine: ZERO încărcare pe lombari." } },
+  lowRow:        { name:"Low Cable Row", muscle:"Mid Back / Lats", svg:"lats", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:40, step:5, note:"SCIATIC: spatele neutru tot timpul — nu rotunji lombarii ca să câștigi amplitudine.", alt:{ equip:"Kettlebell", name:"KB Single-Arm Row cu sprijin", note:"Un genunchi și o mână pe bancă, spatele orizontal și PLAT. Sprijinul scoate lombarii din ecuație." } },
+  straightArm:   { name:"Straight-Arm Pulldown", muscle:"Lats (Isolation)", svg:"lats", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:20, step:2.5, note:"Brațele aproape drepte, trage bara până la coapse. Simte dorsalul, nu tricepsul.", alt:{ equip:"Gantere", name:"Dumbbell Pullover", note:"Aceeași mișcare, pe bancă. Controlează întinderea de sus — nu forța umărul." } },
+  bicepsCurl:    { name:"Biceps Curl", muscle:"Biceps", svg:"biceps", hoist:"RS-2102 — Biceps Curl", handle:"biceps-curl", base:25, step:2.5, note:"Amplitudine completă, negativă 3 secunde.", alt:{ equip:"Gantere", name:"Dumbbell Curl (așezat)", note:"Așezat pe bancă cu spătar — elimină legănarea din lombari." } },
+  hammerCurl:    { name:"Cable Hammer Curls (Rope)", muscle:"Brachialis", svg:"biceps", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:17.5, step:2.5, note:"Priză neutră pe coardă, coatele fixe pe lângă corp.", alt:{ equip:"Gantere", name:"Dumbbell Hammer Curl", note:"Priză neutră (palmele față în față), coatele lipite de corp." } },
+  wristCurl:     { name:"Cable Wrist Curls", muscle:"Forearms", svg:"forearms", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:15, step:2.5, note:"Antebrațele sprijinite, rulează încheieturile lent. Doar încheietura se mișcă.", alt:{ equip:"Gantere", name:"Dumbbell Wrist Curl", note:"Antebrațele sprijinite pe coapse, palmele în sus. Amplitudine completă, lent." } },
+
+  /* ---- Umeri / Trapez ---- */
+  shoulderPress: { name:"Shoulder Press", muscle:"Front & Mid Delts", svg:"shoulders", hoist:"RS-2501 — Shoulder Press", handle:"shoulder-press", base:30, step:2.5, note:"Nu bloca brutal coatele sus. Coastele jos — fără hiperextensie lombară.", alt:{ equip:"Gantere", name:"Seated Dumbbell Shoulder Press", note:"OBLIGATORIU cu spătar vertical. În picioare ar încărca lombarii — nu e pentru tine." } },
+  lateralRaise:  { name:"Lateral Raise", muscle:"Mid Delts", svg:"shoulders", hoist:"RS-1502 — Lateral Raise", handle:"rs-1502-lateral-raise", base:15, step:2.5, note:"Ridică până la nivelul umerilor, nu mai sus. Fără avânt.", alt:{ equip:"Gantere", name:"Dumbbell Lateral Raise", note:"Greutate mică, control total. Dacă te legeni ca să ridici, e prea greu." } },
+  revFly:        { name:"Reverse Pec Fly (Rear Delts)", muscle:"Rear Delts", svg:"shoulders", hoist:"RS-2302 — Pec Fly (Reverse)", handle:"pec-fly", base:25, step:2.5, note:"Strânge omoplații, coatele ușor flexate. Cheia posturii — nu sări peste el.", alt:{ equip:"Gantere", name:"Chest-Supported Rear Delt Fly", note:"Pieptul pe bancă înclinată la 30°. Fără sprijin ai încărca lombarii — folosește banca." } },
+  frontRaise:    { name:"Cable Front Raise", muscle:"Front Delts", svg:"shoulders", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:12.5, step:2.5, note:"Ridică până la nivelul ochilor, coboară controlat în 3 secunde.", alt:{ equip:"Kettlebell", name:"KB Front Raise (2 mâini)", note:"Kettlebell ținut de coarne cu ambele mâini. Ridici până la nivelul ochilor." } },
+  shrugs:        { name:"Cable Shrugs", muscle:"Upper Traps", svg:"traps", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:40, step:5, note:"Direct în sus, fără rotire. Pauză 1 secundă sus.", alt:{ equip:"Gantere", name:"Dumbbell Shrug", note:"O gantera în fiecare mână, pe lângă corp. Doar umerii urcă — capul rămâne nemișcat." } },
+
+  /* ---- Cvadricepși / Gambe / Adductori ---- */
+  legPress:      { name:"Leg Press (ROM parțial)", muscle:"Quads", svg:"quads", hoist:"RS-2403 — Leg Press", handle:"rs-2403-leg-press", base:80, step:5, note:"GENUNCHI: picioarele mai SUS pe platformă, coboară doar până la 90° — nu mai jos. Nu bloca genunchii la extensie.", alt:{ equip:"Gantere", name:"Goblet Squat pe cutie (ROM parțial)", note:"GENUNCHI: te așezi pe o cutie/bancă la înălțimea la care genunchiul face exact 90°, apoi te ridici. Cutia îți garantează că nu cobori prea jos." } },
+  legExt:        { name:"Leg Extension (amplitudine scurtată)", muscle:"Quads (Isolation)", svg:"quads", hoist:"RS-2401 — Leg Extension", handle:"rs-2401-leg-extension", base:25, step:2.5, note:"GENUNCHI: lucrează doar între 90° și 30°, fără extensie brutală la vârf. Tempo lent, greutate mică.", alt:{ equip:"Gantere", name:"Step-up pe treaptă joasă (15-20 cm)", note:"GENUNCHI: treaptă JOASĂ, maximum 20 cm. Urcă împingând prin călcâi, coboară controlat. Fără gantere la început." } },
+  innerThigh:    { name:"Inner Thigh (Adductor)", muscle:"Adductors", svg:"adductors", hoist:"RS-2406 — Inner Thigh", handle:"inner-thigh", base:30, step:5, note:"Strânge lent, controlează revenirea. Nu forța întinderea la capăt (protecție șold).", alt:{ equip:"Kettlebell", name:"Sumo Goblet Squat parțial", note:"ȘOLD: picioarele larg, vârfurile în afară. Coboară doar un sfert — cât permite șoldul fără disconfort." } },
+  calfStanding:  { name:"Calf Raise (Gastrocnemius)", muscle:"Calves (Gastrocnemius)", svg:"calves", hoist:"RS-2415 — Rotary Calf", handle:"rotary-calf", base:50, step:5, note:"Amplitudine completă, pauză 1 secundă sus.", alt:{ equip:"Gantere", name:"Standing Dumbbell Calf Raise", note:"Pe o treaptă, cu o gantera într-o mână și cealaltă sprijinită de perete. Amplitudine completă." } },
+  calfSoleus:    { name:"Calf Raise (Soleus, tempo lent)", muscle:"Calves (Soleus)", svg:"calves", hoist:"RS-2415 — Rotary Calf", handle:"rotary-calf", base:40, step:5, note:"Repetări lente, întindere completă jos. Soleusul răspunde la timp sub tensiune, nu la greutate.", alt:{ equip:"Gantere", name:"Seated Dumbbell Calf Raise", note:"Așezat, ganterele sprijinite pe genunchi. Genunchiul îndoit izolează soleusul — exact ce îți trebuie pentru alergare." } },
+
+  /* ---- Ischiogambieri / Fesieri / Șolduri / Lombari ---- */
+  gluteMaster:   { name:"Glute Master (Hip Extension)", muscle:"Glutes / Hamstrings", svg:"hamstrings", hoist:"RS-2412 — Glute Master", handle:"glute-master", base:30, step:5, note:"ȘOLD: împinge cu călcâiul, strânge fesierul 1 secundă sus. Mișcarea vine din șold, NU din lombari.", alt:{ equip:"Gantere", name:"Hip Thrust cu gantera", note:"Omoplații pe bancă, gantera pe șold (pune un prosop). Împinge cu călcâiele, strânge fesierii sus. Bărbia în piept." } },
+  proneLegCurl:  { name:"Prone Leg Curl", muscle:"Hamstrings", svg:"hamstrings", hoist:"RS-2408 — Prone Leg Curl", handle:"rs-2408-prone-leg-curl", base:30, step:2.5, note:"Șoldurile lipite de pernă, negativă 3 secunde.", alt:{ equip:"Gantere", name:"Lying Dumbbell Leg Curl", note:"Culcat pe burtă, gantera prinsă între tălpi. Cere un partener sau o gantera ușoară." } },
+  seatedLegCurl: { name:"Seated Leg Curl", muscle:"Hamstrings", svg:"hamstrings", hoist:"RS-2402 — Leg Curl", handle:"rs-2402-leg-curl", base:32.5, step:2.5, note:"Menține contracția 1 secundă. Ischiogambieri puternici = mai puțină tensiune pe sciatic.", alt:{ equip:"Kettlebell", name:"KB Romanian Deadlift (ușor)", note:"SCIATIC: doar din faza 2, greutate mică, spatele NEUTRU. Coboară doar până simți întinderea — nu mai jos. Oprește la orice furnicătură." } },
+  outerThigh:    { name:"Outer Thigh (Abductor)", muscle:"Abductors", svg:"abductors", hoist:"RS-2407 — Outer Thigh", handle:"outer-thigh", base:30, step:5, note:"ȘOLD: exercițiul cheie pentru fesierul mijlociu. Împinge lent, pauză 1 secundă la exterior.", alt:{ equip:"Gantere", name:"Side-Lying Hip Abduction", note:"ȘOLD: culcat pe o parte, ridici piciorul de deasupra. Fără greutate la început — apoi o gantera mică pe coapsă." } },
+  pullThrough:   { name:"Cable Pull-Through", muscle:"Glutes / Hamstrings", svg:"hamstrings", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:25, step:5, note:"Articulează din șold cu spatele neutru. Strânge fesierii sus, nu împinge lombarii înainte.", alt:{ equip:"Kettlebell", name:"KB Deadlift (de la înălțime)", note:"SCIATIC: kettlebell pus pe o cutie, nu pe podea — scurtează amplitudinea și protejează lombarii. Spatele neutru." } },
+  lowBack:       { name:"Low Back Extension (parțial)", muscle:"Lower Back", svg:"lowerback", hoist:"RS-2204 — Low Back", handle:"low-back", base:25, step:5, note:"SCIATIC: ridică doar până la linia trunchiului, NU mai sus. Zero hiperextensie. Oprește-te la orice furnicătură pe picior.", alt:{ equip:"Kettlebell", name:"KB Suitcase Carry", note:"SCIATIC: mergi 20-30 m cu un kettlebell într-o singură mână, trunchiul perfect drept. Întărește lombarii izometric, fără nicio îndoire a coloanei. Cea mai sigură variantă pentru tine." } },
+
+  /* ---- Core ---- */
+  cableCrunch:   { name:"Cable Crunches", muscle:"Abdominals", svg:"abs", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:25, step:2.5, note:"Îngenunchiat, curbează coastele spre pelvis. Mișcarea e din abdomen, nu din șolduri.", alt:{ equip:"Gantere", name:"Dumbbell Crunch", note:"Culcat, o gantera ținută la piept. Curbează coloana controlat, fără să tragi de gât." } },
+  abCrunch:      { name:"Ab Crunch", muscle:"Abdominals", svg:"abs", hoist:"RS-2601 — Abdominals", handle:"rs-2601-abdominals", base:30, step:5, note:"Curbează coloana controlat, nu trage cu brațele.", alt:{ equip:"Gantere", name:"Dumbbell Crunch", note:"Aceeași mișcare, cu o gantera la piept pentru rezistență." } },
+  pallof:        { name:"Cable Pallof Press", muscle:"Core / Anti-Rotation", svg:"abs", hoist:"HD-3000 — Dual Pulley Functional Trainer", handle:"hd-3000-dual-pulley-functional-trainer", base:12.5, step:2.5, note:"Împinge drept și REZISTĂ rotației. Cel mai bun exercițiu de core pentru o lombară sensibilă.", alt:{ equip:"Kettlebell", name:"KB Suitcase Carry", note:"Aceeași idee de antirotație: kettlebell într-o mână, mergi drept și rezistă înclinării laterale." } },
+  rotaryTorso:   { name:"Rotary Torso (amplitudine mică)", muscle:"Obliques", svg:"abs", hoist:"RS-2602 — Rotary Torso", handle:"rs-2602-rotary-torso", base:20, step:5, note:"SCIATIC: amplitudine MICĂ și controlată, rotație doar din torace. Oprește dacă simți lombarii.", alt:{ equip:"Kettlebell", name:"KB Halo (amplitudine mică)", note:"SCIATIC: kettlebell ușor, cerc lent în jurul capului. Șoldurile rămân complet nemișcate." } },
+};
+
+const DAY_META = [
+  { day:"Luni",     short:"Piept",      name:"Piept & Triceps",                  muscles:"Pectorali, Triceps" },
+  { day:"Marți",    short:"Spate",      name:"Spate & Biceps",                   muscles:"Dorsali, Trapez mijlociu, Biceps, Antebrațe" },
+  { day:"Miercuri", short:"Picioare A", name:"Picioare A — Cvadricepși & Gambe", muscles:"Cvadricepși, Adductori, Gambe, Abdomen" },
+  { day:"Joi",      short:"Umeri",      name:"Umeri, Trapez & Core",             muscles:"Umeri, Trapez, Antebrațe, Abdomen" },
+  { day:"Vineri",   short:"Picioare B", name:"Picioare B — Posterior & Șolduri", muscles:"Ischiogambieri, Fesieri, Abductori, Lombari" },
+];
+
+/* Fazele: aceeași împărțire pe 5 zile în tot programul (familiaritate =
+   progresie măsurabilă), dar se schimbă selecția, intensitatea și pauzele. */
+const PHASES = [
   {
-    label: "Săptămâna 1",
+    label: "Faza 1 — Adaptare & Control articular",
+    focus: "Repetări mari, greutăți moderate, tempo controlat. Întâi pregătim genunchii, șoldurile și coloana; abia apoi încărcăm.",
+    params: { main:{sets:3, reps:"12-15", rest:75}, sec:{sets:3, reps:"12-15", rest:60}, iso:{sets:2, reps:"15", rest:45} },
     days: [
-      {
-        day: "Luni", name: "Chest & Triceps", muscles: "Pectorali, Triceps",
-        exercises: [
-          { name: "Chest Press", muscle: "Chest", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Apasă mânerele înainte, strânge pieptul la extensia completă", svg: "chest", hoist: "RS-2301 — Chest Press", handle: "rs-2301-chest-press" },
-          { name: "Incline Chest Press", muscle: "Upper Chest", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Reglează scaunul ca mânerele să fie la nivelul pieptului superior", svg: "chest", hoist: "HD-3300 — Chest/Shoulder Press (Incline)", handle: "hd-3300-chest-shoulder-press" },
-          { name: "Pec Fly (Butterfly)", muscle: "Chest (Isolation)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Apropie pernuțele lent, strânge 1 secundă", svg: "chest", hoist: "RS-2302 — Pec Fly", handle: "pec-fly" },
-          { name: "Cable Crossovers", muscle: "Inner Chest", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge la contracția maximă, controlează revenirea", svg: "chest", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Tricep Rope Pushdowns", muscle: "Triceps (Lateral)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Desfă coarda la final, strânge tricepșii", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Overhead Tricep Extension", muscle: "Triceps (Long Head)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Întins în spate cu cablul, întindere completă", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Seated Dip", muscle: "Triceps", sets: 3, reps: "12", rest: "45s", restSec: 45, note: "Torsul drept, apasă în jos complet", svg: "triceps", hoist: "RS-2101 — Seated Dip", handle: "seated-dip" },
-        ]
-      },
-      {
-        day: "Marți", name: "Back & Biceps & Forearms", muscles: "Lats, Biceps, Antebrațe",
-        exercises: [
-          { name: "Lat Pulldown (Wide Grip)", muscle: "Lats", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Trage la pieptul superior, aplecă-te ușor pe spate", svg: "lats", hoist: "RS-2201 — Lat Pulldown", handle: "rs-2201-lat-pulldown" },
-          { name: "Low Cable Row", muscle: "Mid Back / Lats", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Trage la pieptul inferior, retrage scapulele", svg: "lats", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Seated Mid Row", muscle: "Mid Back", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Împinge coatele înapoi, strânge omoplații", svg: "lats", hoist: "RS-2203 — Seated Mid Row", handle: "seated-mid-row" },
-          { name: "Straight-Arm Pulldown", muscle: "Lats (Isolation)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Brațele drepte, trage bara până la coapse", svg: "lats", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Biceps Curl", muscle: "Biceps", sets: 3, reps: "10-12", rest: "60s", restSec: 60, note: "Amplitudine completă, negativă lentă", svg: "biceps", hoist: "RS-2102 — Biceps Curl", handle: "biceps-curl" },
-          { name: "Cable Hammer Curls (Rope)", muscle: "Brachialis", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Priză neutră pe coardă, strânge sus", svg: "biceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Cable Wrist Curls", muscle: "Forearms", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Antebrațele pe genunchi, rulează încheieturile sus", svg: "forearms", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-        ]
-      },
-      {
-        day: "Miercuri", name: "Quads, Adductors & Calves", muscles: "Cvadricepși, Adductori, Gambe, Abdomen",
-        exercises: [
-          { name: "Leg Press", muscle: "Quads", sets: 4, reps: "8-10", rest: "120s", restSec: 120, note: "Picioarele la lățimea umerilor, împinge prin toată talpa", svg: "quads", hoist: "RS-2403 — Leg Press", handle: "rs-2403-leg-press" },
-          { name: "Leg Press (Narrow Stance — Quads)", muscle: "Quads", sets: 4, reps: "10-12", rest: "90s", restSec: 90, note: "Picioare apropiate jos pe platformă, coboară până la paralel", svg: "quads", hoist: "RS-2403 — Leg Press", handle: "rs-2403-leg-press" },
-          { name: "Leg Extension", muscle: "Quads (Isolation)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge și menține sus 1 secundă", svg: "quads", hoist: "RS-2401 — Leg Extension", handle: "rs-2401-leg-extension" },
-          { name: "Inner Thigh (Adductor)", muscle: "Adductors", sets: 3, reps: "15", rest: "45s", restSec: 45, note: "Strânge picioarele înăuntru, controlează revenirea", svg: "adductors", hoist: "RS-2406 — Inner Thigh", handle: "inner-thigh" },
-          { name: "Standing Calf Raises", muscle: "Calves (Gastrocnemius)", sets: 4, reps: "15-20", rest: "45s", restSec: 45, note: "Amplitudine completă, pauză sus", svg: "calves", hoist: "RS-2415 — Rotary Calf", handle: "rotary-calf" },
-          { name: "Calf Raise (Soleus Focus)", muscle: "Calves (Soleus)", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Repetări lente controlate, întindere completă jos", svg: "calves", hoist: "RS-2415 — Rotary Calf", handle: "rotary-calf" },
-          { name: "Cable Crunches", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Îngenunchiat, curbează coastele spre pelvis", svg: "abs", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-        ]
-      },
-      {
-        day: "Joi", name: "Shoulders, Traps & Abs", muscles: "Umeri, Trapez, Abdominali",
-        exercises: [
-          { name: "Shoulder Press", muscle: "Front & Mid Delts", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Apasă complet sus, coboară controlat", svg: "shoulders", hoist: "RS-2501 — Shoulder Press", handle: "shoulder-press" },
-          { name: "Lateral Raise", muscle: "Mid Delts", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Ridică la nivelul umerilor, mișcare controlată", svg: "shoulders", hoist: "RS-1502 — Lateral Raise", handle: "rs-1502-lateral-raise" },
-          { name: "Reverse Pec Fly (Rear Delts)", muscle: "Rear Delts", sets: 3, reps: "15", rest: "60s", restSec: 60, note: "Strânge omoplații la final", svg: "shoulders", hoist: "RS-2302 — Pec Fly (Reverse)", handle: "pec-fly" },
-          { name: "Cable Front Raise", muscle: "Front Delts", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Ridică până la nivelul ochilor, controlează revenirea", svg: "shoulders", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Cable Shrugs", muscle: "Upper Traps", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Direct sus, strânge sus, fără rotire", svg: "traps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Ab Crunch", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Curbează coastele spre pelvis, nu trage cu brațele", svg: "abs", hoist: "RS-2601 — Abdominals", handle: "rs-2601-abdominals" },
-          { name: "Cable Pallof Press", muscle: "Core / Anti-Rotation", sets: 3, reps: "12 / parte", rest: "45s", restSec: 45, note: "Împinge mânerele drept, rezistă rotației", svg: "abs", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-        ]
-      },
-      {
-        day: "Vineri", name: "Hamstrings, Lower Back & Abductors", muscles: "Ischiogambieri, Lombari, Abductori",
-        exercises: [
-          { name: "Glute Master (Hip Extension)", muscle: "Hamstrings / Glutes", sets: 4, reps: "10-12", rest: "90s", restSec: 90, note: "Împinge șoldurile înainte, strânge fesierii și ischiogambierii", svg: "hamstrings", hoist: "RS-2412 — Glute Master", handle: "glute-master" },
-          { name: "Prone Leg Curl", muscle: "Hamstrings", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Eccentric lent, strânge sus", svg: "hamstrings", hoist: "RS-2408 — Prone Leg Curl", handle: "rs-2408-prone-leg-curl" },
-          { name: "Seated Leg Curl", muscle: "Hamstrings", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Menține contracția maximă 1 secundă", svg: "hamstrings", hoist: "RS-2402 — Leg Curl", handle: "rs-2402-leg-curl" },
-          { name: "Low Back Extension", muscle: "Lower Back", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Ridică torsul controlat, nu hiperextinde lombarii", svg: "lowerback", hoist: "RS-2204 — Low Back", handle: "low-back" },
-          { name: "Outer Thigh (Abductor)", muscle: "Abductors", sets: 3, reps: "15", rest: "45s", restSec: 45, note: "Împinge genunchii în afară, controlează revenirea", svg: "abductors", hoist: "RS-2407 — Outer Thigh", handle: "outer-thigh" },
-          { name: "Cable Pull-Through", muscle: "Hamstrings / Glutes", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Articulează din șolduri, strânge fesierii sus", svg: "hamstrings", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Cable Good Morning", muscle: "Lower Back", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Înclină din șold cu spatele drept, tensiune pe cablu", svg: "lowerback", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-        ]
-      },
+      [["chestPress","main"],["inclinePress","sec"],["pecFly","sec"],["crossover","iso"],["pushdown","sec"],["overheadExt","iso"]],
+      [["latPulldown","main"],["midRow","sec"],["lowRow","sec"],["straightArm","iso"],["bicepsCurl","sec"],["hammerCurl","iso"]],
+      [["legPress","main"],["legExt","sec"],["innerThigh","sec"],["calfStanding","sec"],["calfSoleus","iso"],["cableCrunch","iso"]],
+      [["shoulderPress","main"],["lateralRaise","sec"],["revFly","sec"],["shrugs","sec"],["wristCurl","iso"],["abCrunch","iso"]],
+      [["gluteMaster","main"],["proneLegCurl","sec"],["seatedLegCurl","sec"],["outerThigh","sec"],["lowBack","iso"],["pallof","iso"]],
+    ],
+    finishers: [
+      { name:"Mers înclinat pe bandă", dose:"10 min · pantă 6-8% · 5,5 km/h", note:"Ritm la care încă poți vorbi. Panta încarcă fesierii fără impact pe genunchi." },
+      { name:"Bicicletă staționară",   dose:"10 min · rezistență 4-5/20 · 70-80 rpm", note:"Ridică șaua astfel încât genunchiul să nu treacă de 90° la punctul de sus." },
+      { name:"Mers plat, relaxat",     dose:"8 min · pantă 0% · 5,0 km/h", note:"După ziua de picioare e doar circulație. Nu adăuga oboseală." },
+      { name:"Mers înclinat pe bandă", dose:"12 min · pantă 8% · 5,5 km/h", note:"Ziua cu cea mai mică oboseală în picioare — profită și fă cel mai lung bloc aici." },
+      { name:"Eliptic sau bicicletă",  dose:"8 min · rezistență 3/20 · foarte ușor", note:"Decompresie pentru șolduri după posterior chain." },
     ]
   },
-  /* ---------------------- WEEK 2 ---------------------- */
   {
-    label: "Săptămâna 2",
+    label: "Faza 2 — Hipertrofie în deficit caloric",
+    focus: "Greutăți mai mari pe 8-12 repetări, pauze mai lungi. Semnalul care spune corpului să păstreze mușchiul în timp ce pierzi grăsime.",
+    params: { main:{sets:4, reps:"8-10", rest:105}, sec:{sets:3, reps:"10-12", rest:75}, iso:{sets:3, reps:"12-15", rest:60} },
     days: [
-      {
-        day: "Luni", name: "Push (Chest, Shoulders, Triceps)", muscles: "Piept, Umeri, Triceps",
-        exercises: [
-          { name: "Incline Chest Press", muscle: "Upper Chest", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Concentrează-te pe pieptul superior", svg: "chest", hoist: "HD-3300 — Chest/Shoulder Press (Incline)", handle: "hd-3300-chest-shoulder-press" },
-          { name: "Chest Press", muscle: "Chest", sets: 3, reps: "10-12", rest: "75s", restSec: 75, note: "Presează egal cu ambele brațe", svg: "chest", hoist: "RS-2301 — Chest Press", handle: "rs-2301-chest-press" },
-          { name: "Shoulder Press", muscle: "Shoulders", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Apasă vertical, nu bloca coatele complet", svg: "shoulders", hoist: "RS-2501 — Shoulder Press", handle: "shoulder-press" },
-          { name: "Lateral Raise", muscle: "Mid Delts", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Mișcare controlată, fără elan", svg: "shoulders", hoist: "RS-1502 — Lateral Raise", handle: "rs-1502-lateral-raise" },
-          { name: "Cable Crossovers (Low to High)", muscle: "Upper Chest", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Scripeții jos, ridică mâinile sus și împreună", svg: "chest", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Tricep Bar Pushdown", muscle: "Triceps", sets: 3, reps: "10-12", rest: "60s", restSec: 60, note: "Coatele fixe, blocare completă", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Overhead Tricep Extension", muscle: "Triceps (Long Head)", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Întindere completă în spate", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-        ]
-      },
-      {
-        day: "Marți", name: "Pull (Lats, Traps, Biceps, Forearms)", muscles: "Lats, Trapez, Biceps, Antebrațe",
-        exercises: [
-          { name: "Lat Pulldown (Close Grip)", muscle: "Lats", sets: 4, reps: "8-10", rest: "90s", restSec: 90, note: "Priză strânsă, trage la pieptul inferior", svg: "lats", hoist: "RS-2201 — Lat Pulldown", handle: "rs-2201-lat-pulldown" },
-          { name: "Seated Mid Row (Wide)", muscle: "Mid Back / Lats", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Priză largă, strânge omoplații", svg: "lats", hoist: "RS-2203 — Seated Mid Row", handle: "seated-mid-row" },
-          { name: "Cable Shrugs", muscle: "Upper Traps", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Ridicare verticală pură, pauză sus", svg: "traps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Cable Face Pulls", muscle: "Traps / Rear Delts", sets: 3, reps: "15", rest: "45s", restSec: 45, note: "Rotație externă sus, trage la frunte", svg: "traps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Standing Biceps Cable Curl", muscle: "Biceps", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Tensiune constantă pe parcursul mișcării", svg: "biceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Biceps Curl (Preacher Style)", muscle: "Biceps", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Pad-ul susține brațele, negativă lentă", svg: "biceps", hoist: "RS-2102 — Biceps Curl", handle: "biceps-curl" },
-          { name: "Cable Wrist Curls", muscle: "Forearms", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Antebrațele sprijinite, doar încheietura lucrează", svg: "forearms", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-        ]
-      },
-      {
-        day: "Miercuri", name: "Lower Body (Quads, Hamstrings, Calves)", muscles: "Cvadricepși, Ischiogambieri, Gambe",
-        exercises: [
-          { name: "Leg Press", muscle: "Quads", sets: 4, reps: "10-12", rest: "120s", restSec: 120, note: "Coboară controlat, împinge cu forță", svg: "quads", hoist: "RS-2403 — Leg Press", handle: "rs-2403-leg-press" },
-          { name: "Prone Leg Curl", muscle: "Hamstrings", sets: 4, reps: "10-12", rest: "75s", restSec: 75, note: "Strânge ischiogambierii sus", svg: "hamstrings", hoist: "RS-2408 — Prone Leg Curl", handle: "rs-2408-prone-leg-curl" },
-          { name: "Leg Press (Narrow Stance — Quads)", muscle: "Quads", sets: 3, reps: "10-12", rest: "90s", restSec: 90, note: "Picioare apropiate jos, coboară până la paralel sau mai jos", svg: "quads", hoist: "RS-2403 — Leg Press", handle: "rs-2403-leg-press" },
-          { name: "Seated Leg Curl", muscle: "Hamstrings", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge 1 secundă la final", svg: "hamstrings", hoist: "RS-2402 — Leg Curl", handle: "rs-2402-leg-curl" },
-          { name: "Leg Extension", muscle: "Quads", sets: 3, reps: "12-15", rest: "60s", restSec: 60, note: "Strânge cvadricepșii la final", svg: "quads", hoist: "RS-2401 — Leg Extension", handle: "rs-2401-leg-extension" },
-          { name: "Standing Calf Raise", muscle: "Calves", sets: 4, reps: "15-20", rest: "45s", restSec: 45, note: "Amplitudine maximă, pauză sus", svg: "calves", hoist: "RS-2415 — Rotary Calf", handle: "rotary-calf" },
-          { name: "Calf Raise (Soleus Focus)", muscle: "Calves (Soleus)", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Repetări lente cu întindere completă", svg: "calves", hoist: "RS-2415 — Rotary Calf", handle: "rotary-calf" },
-        ]
-      },
-      {
-        day: "Joi", name: "Core, Lower Back & Hip", muscles: "Lombari, Abdomen, Abductori, Adductori",
-        exercises: [
-          { name: "Low Back Extension", muscle: "Lower Back", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Mișcare controlată, fără hiperextensie", svg: "lowerback", hoist: "RS-2204 — Low Back", handle: "low-back" },
-          { name: "Outer Thigh (Abductor)", muscle: "Abductors", sets: 4, reps: "15", rest: "45s", restSec: 45, note: "Apasă în afară controlat, fără elan", svg: "abductors", hoist: "RS-2407 — Outer Thigh", handle: "outer-thigh" },
-          { name: "Inner Thigh (Adductor)", muscle: "Adductors", sets: 4, reps: "15", rest: "45s", restSec: 45, note: "Strânge picioarele înăuntru, pauză 1 sec", svg: "adductors", hoist: "RS-2406 — Inner Thigh", handle: "inner-thigh" },
-          { name: "Cable Crunches", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Curbează coloana, nu folosi șoldurile", svg: "abs", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Rotary Torso Twist", muscle: "Obliques / Core", sets: 3, reps: "12 / parte", rest: "45s", restSec: 45, note: "Rotație din core, controlat în ambele părți", svg: "abs", hoist: "RS-2602 — Rotary Torso", handle: "rs-2602-rotary-torso" },
-          { name: "Ab Crunch", muscle: "Abdominals", sets: 3, reps: "15-20", rest: "45s", restSec: 45, note: "Curbează coastele spre pelvis", svg: "abs", hoist: "RS-2601 — Abdominals", handle: "rs-2601-abdominals" },
-          { name: "Cable Good Morning", muscle: "Lower Back", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Mișcare din șold, spatele drept", svg: "lowerback", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-        ]
-      },
-      {
-        day: "Vineri", name: "Arms & Shoulders Specialization", muscles: "Umeri, Biceps, Triceps, Antebrațe",
-        exercises: [
-          { name: "Lateral Raise", muscle: "Mid Delts", sets: 4, reps: "12-15", rest: "60s", restSec: 60, note: "Mișcare lentă, vârf de contracție", svg: "shoulders", hoist: "RS-1502 — Lateral Raise", handle: "rs-1502-lateral-raise" },
-          { name: "Cable Front Raise", muscle: "Front Delts", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Ridică la nivelul ochilor, controlează", svg: "shoulders", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Reverse Pec Fly (Rear Delts)", muscle: "Rear Delts", sets: 3, reps: "15", rest: "60s", restSec: 60, note: "Strânge omoplații la spate", svg: "shoulders", hoist: "RS-2302 — Pec Fly (Reverse)", handle: "pec-fly" },
-          { name: "Biceps Curl (Preacher Style)", muscle: "Biceps", sets: 4, reps: "10-12", rest: "60s", restSec: 60, note: "Negativă lentă (3 secunde)", svg: "biceps", hoist: "RS-2102 — Biceps Curl", handle: "biceps-curl" },
-          { name: "Cable Hammer Curls", muscle: "Biceps / Brachialis", sets: 3, reps: "12", rest: "60s", restSec: 60, note: "Priză neutră pe coardă", svg: "biceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Tricep Rope Pushdown", muscle: "Triceps", sets: 4, reps: "10-12", rest: "60s", restSec: 60, note: "Desfă coarda la final, strânge", svg: "triceps", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-          { name: "Cable Wrist Curls", muscle: "Forearms", sets: 3, reps: "20", rest: "45s", restSec: 45, note: "Doar încheietura, antebrațul fix", svg: "forearms", hoist: "HD-3000 — Dual Pulley Functional Trainer", handle: "hd-3000-dual-pulley-functional-trainer" },
-        ]
-      },
+      [["inclinePress","main"],["chestPress","sec"],["pecFly","sec"],["seatedDip","sec"],["pushdown","iso"],["overheadExt","iso"]],
+      [["latPulldown","main"],["midRow","sec"],["lowRow","sec"],["bicepsCurl","sec"],["straightArm","iso"],["wristCurl","iso"]],
+      [["legPress","main"],["legExt","sec"],["innerThigh","sec"],["calfStanding","sec"],["cableCrunch","iso"],["rotaryTorso","iso"]],
+      [["shoulderPress","main"],["lateralRaise","sec"],["revFly","sec"],["shrugs","sec"],["frontRaise","iso"],["abCrunch","iso"]],
+      [["gluteMaster","main"],["proneLegCurl","sec"],["seatedLegCurl","sec"],["outerThigh","sec"],["lowBack","iso"],["pullThrough","iso"]],
+    ],
+    finishers: [
+      { name:"Mers înclinat pe bandă", dose:"12 min · pantă 8-10% · 5,5 km/h", note:"Deficitul e mai mare acum — cardio-ul rămâne cu impact zero, ca să nu furi din recuperare." },
+      { name:"Bicicletă staționară",   dose:"12 min · rezistență 6-7/20 · 75-85 rpm", note:"Puls țintă ~120-135. Dacă nu poți vorbi, e prea intens." },
+      { name:"Mers plat, relaxat",     dose:"8 min · pantă 0% · 5,0 km/h", note:"Zi de picioare — doar atât." },
+      { name:"Mers înclinat pe bandă", dose:"15 min · pantă 8% · 6,0 km/h", note:"Cel mai lung bloc al săptămânii." },
+      { name:"Eliptic sau bicicletă",  dose:"10 min · rezistență 4/20 · ușor", note:"Șoldurile au muncit — mișcare fără încărcare." },
     ]
-  }
+  },
+  {
+    label: "Faza 3 — Densitate & condiție fizică",
+    focus: "Pauze scurte, repetări medii-mari, un pic de interval training. Menținem forța, creștem cheltuiala calorică și anduranța.",
+    params: { main:{sets:4, reps:"10-12", rest:75}, sec:{sets:3, reps:"12-15", rest:45}, iso:{sets:3, reps:"15-20", rest:40} },
+    days: [
+      [["chestPress","main"],["inclinePress","sec"],["seatedDip","sec"],["crossover","iso"],["pushdown","iso"],["overheadExt","iso"]],
+      [["latPulldown","main"],["lowRow","sec"],["midRow","sec"],["straightArm","iso"],["bicepsCurl","sec"],["hammerCurl","iso"]],
+      [["legPress","main"],["legExt","sec"],["innerThigh","iso"],["calfStanding","sec"],["calfSoleus","iso"],["cableCrunch","iso"]],
+      [["shoulderPress","main"],["lateralRaise","sec"],["revFly","sec"],["shrugs","sec"],["frontRaise","iso"],["pallof","iso"]],
+      [["gluteMaster","main"],["seatedLegCurl","sec"],["proneLegCurl","sec"],["pullThrough","sec"],["outerThigh","iso"],["rotaryTorso","iso"]],
+    ],
+    finishers: [
+      { name:"Intervale pe bandă (mers rapid)", dose:"8 × (30s pantă 12% la 6,0 km/h / 90s pantă 1% la 5,0 km/h)", note:"Intervale DOAR prin pantă și viteză de mers — nu alergare. Zero impact pe genunchi și sciatic." },
+      { name:"Bicicletă — intervale",  dose:"8 × (30s rezistență 10/20 / 90s rezistență 4/20)", note:"Rezistența crește în efort, nu cadența. Genunchii rămân sub 90°." },
+      { name:"Mers plat, relaxat",     dose:"8 min · pantă 0% · 5,0 km/h", note:"Zi de picioare — recuperare, nu intensitate." },
+      { name:"Mers înclinat pe bandă", dose:"15 min · pantă 10% · 6,0 km/h", note:"Bloc lung, constant." },
+      { name:"Eliptic",                dose:"10 min · rezistență 4/20 + 5 min stretching șold", note:"Ultima zi a săptămânii: prioritatea e cum te simți luni." },
+    ]
+  },
 ];
+
+/* Progresia în interiorul fiecărei faze (4 săptămâni):
+   acumulare → încărcare (progresezi din GREUTATE) → vârf (progresezi din
+   VOLUM) → deload. Seria în plus se adaugă doar la exercițiile principale
+   și secundare, nu și la izolări: altfel vârful ar sări cu ~37% de volum
+   într-o singură săptămână, prea mult pentru un adult în deficit caloric. */
+const D_FLAT   = { main: 0,  sec: 0,  iso: 0  };
+const D_PEAK   = { main: 1,  sec: 1,  iso: 0  };
+const D_DELOAD = { main: -1, sec: -1, iso: -1 };
+
+const WEEK_SCHEME = [
+  { phase:0, delta:D_FLAT,   deload:false, intent:"Stabilește greutățile de Start. Oprește fiecare serie cu ~3 repetări în rezervă (RPE 6). Săptămâna asta culegi date, nu forțezi." },
+  { phase:0, delta:D_FLAT,   deload:false, intent:"Același volum, dar +2.5 kg acolo unde ai atins capătul de sus al intervalului. Progresezi din greutate, nu din serii. RPE 7." },
+  { phase:0, delta:D_PEAK,   deload:false, intent:"Vârful fazei: o serie în plus la exercițiile principale și secundare. RPE 7-8. Aici apare adaptarea." },
+  { phase:0, delta:D_DELOAD, deload:true,  intent:"DELOAD. O serie mai puțin peste tot, greutăți -20%, RPE 5. Nu e o săptămână pierdută — articulațiile se refac, forța rămâne." },
+
+  { phase:1, delta:D_FLAT,   deload:false, intent:"Începe faza grea și deficitul caloric complet. Greutăți mai mari, 8-10 repetări pe exercițiile principale. RPE 7." },
+  { phase:1, delta:D_FLAT,   deload:false, intent:"+2.5-5 kg pe exercițiile principale. Dacă nu prinzi 8 repetări curate, greutatea e prea mare — dă înapoi." },
+  { phase:1, delta:D_PEAK,   deload:false, intent:"Vârf de volum. RPE 8 — ultima repetare grea, dar curată. Cea mai solicitantă săptămână din program." },
+  { phase:1, delta:D_DELOAD, deload:true,  intent:"DELOAD. Volum -30%, greutăți -20%. Obligatoriu: după 7 săptămâni în deficit, aici recuperezi." },
+
+  { phase:2, delta:D_FLAT,   deload:false, intent:"Pauze scurtate la 40-75s. Aceleași greutăți ca în faza 2 vor părea mai grele — e normal și e exact scopul." },
+  { phase:2, delta:D_FLAT,   deload:false, intent:"Menține greutățile, scurtează pauzele cu încă 5 secunde. Crește densitatea, nu încărcătura." },
+  { phase:2, delta:D_PEAK,   deload:false, intent:"Vârf final de volum. Aceasta e ultima săptămână grea din program." },
+  { phase:2, delta:D_DELOAD, deload:true,  intent:"DELOAD & TESTARE. Volum redus. Reia greutățile din săptămâna 1 la 3 exerciții — vei vedea negru pe alb cât ai progresat." },
+];
+
+function buildWeeks() {
+  return WEEK_SCHEME.map((w, i) => {
+    const ph = PHASES[w.phase];
+    return {
+      label: `S${i + 1}`,
+      phase: ph.label,
+      focus: ph.focus,
+      intent: w.intent,
+      deload: w.deload,
+      days: ph.days.map((tmpl, di) => ({
+        ...DAY_META[di],
+        finisher: ph.finishers[di],
+        exercises: tmpl.map(([id, role]) => {
+          const p = ph.params[role];
+          const sets = Math.max(2, p.sets + w.delta[role]);
+          return { ...EX[id], id, phase: w.phase, sets, reps: p.reps, rest: `${p.rest}s`, restSec: p.rest };
+        })
+      }))
+    };
+  });
+}
+
+const weeks = buildWeeks();
 
 const warmupSVGs = {
   jumpingJacks: `<svg viewBox="0 0 120 60"><line x1="0" y1="56" x2="120" y2="56" stroke="#3a3a5a" stroke-width="1" stroke-dasharray="3,3"/><circle cx="60" cy="8" r="5" fill="#ffb74d"/><line x1="60" y1="13" x2="60" y2="36" stroke="#ffb74d" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="21" x2="38" y2="10" stroke="#ffb74d" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="21" x2="82" y2="10" stroke="#ffb74d" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="36" x2="42" y2="54" stroke="#ffb74d" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="36" x2="78" y2="54" stroke="#ffb74d" stroke-width="3" stroke-linecap="round"/><path d="M 34 13 Q 26 9 28 3" stroke="#e94560" stroke-width="1.5" fill="none" opacity="0.8"/><polygon points="28,3 25,8 31,7" fill="#e94560" opacity="0.8"/><path d="M 86 13 Q 94 9 92 3" stroke="#e94560" stroke-width="1.5" fill="none" opacity="0.8"/><polygon points="92,3 89,8 95,7" fill="#e94560" opacity="0.8"/></svg>`,
@@ -672,11 +1414,11 @@ const spineRecovery = [
 
 const warmupExercises = [
   {
-    name: "Jumping Jacks",
+    name: "Step Jacks (fără săritură)",
     target: "Activare generală / Circulație",
     dose: "2 minute",
     svg: "jumpingJacks",
-    note: "Sari cu brațele sus și picioarele deschise simultan, apoi revino. Menține ritmul constant. Crește temperatura corpului și activează sistemul cardiovascular."
+    note: "GENUNCHI/ȘOLD: varianta fără impact — pășește lateral pe rând cu câte un picior, în loc să sari, ridicând brațele simultan. Un picior rămâne mereu pe sol. Același efect de încălzire, zero șoc articular."
   },
   {
     name: "Cercuri de brațe",
@@ -707,26 +1449,506 @@ const warmupExercises = [
     note: "Picioarele la lățimea umerilor, brațele întinse. Rotează torsul stânga-dreapta fără a mișca șoldurile. Mobilizează coloana toracică și activează oblicii."
   },
   {
-    name: "Genuflexiuni libere",
+    name: "Semi-genuflexiuni (sfert de amplitudine)",
     target: "Cvadricepși / Fesieri / Gambe",
     dose: "15 reps",
     svg: "squats",
-    note: "Picioarele la lățimea umerilor, coboară controlat până la paralel. Activează musculatura integrală a picioarelor și crește fluxul sanguin spre zona inferioară."
+    note: "GENUNCHI: coboară doar un sfert din amplitudine, NU până la paralel. Greutatea pe toată talpa, genunchii pe direcția vârfurilor. Scopul e încălzirea, nu efortul."
   },
   {
-    name: "High Knees (Genunchi sus)",
+    name: "Mers pe loc cu genunchi sus",
     target: "Flexori șold / Core / Cardio",
-    dose: "30 secunde",
+    dose: "45 secunde",
     svg: "highKnees",
-    note: "Aleargă pe loc ridicând genunchii la nivelul șoldurilor. Menține abdomenul contractat și spatele drept. Finalizează încălzirea cu activare cardio intensă."
+    note: "MERS pe loc, nu alergare — un picior rămâne mereu pe sol. Zero impact pentru genunchi și sciatic. Ridică genunchiul până la nivelul șoldului, abdomenul contractat."
   }
+];
+
+/* ============================================================
+   PLAN ALERGARE 52 SĂPTĂMÂNI — obiectiv: 5 km continuu
+   Progresie „return to run" adaptată pentru sciatic / genunchi / șold.
+   Primele 12 săptămâni NU conțin alergare — sunt pregătirea pentru ea.
+   ============================================================ */
+
+const RUN_PHASES = [
+  {
+    label: "Faza 0 — Fundație (fără alergare)",
+    weeks: "S1-S12",
+    color: "#4fc3f7",
+    why: () => `La ${fmtKg(getCfg().weight)} kg, fiecare pas alergat trimite ${Math.round(getCfg().weight*3)}-${Math.round(getCfg().weight*4)} kg prin genunchi. Înainte să alergi, scazi greutatea și întărești fesierii, ischiogambierii și gambele. Astea 12 săptămâni SUNT antrenamentul pentru alergare.`,
+    days: "Mers înclinat, deja inclus în finisher-ele din sală",
+    gate: [
+      "60 de minute de mers alert, fără durere",
+      "20 de ridicări pe vârf pe un singur picior, fiecare picior",
+      "2 săptămâni consecutive fără durere sciatică în viața de zi cu zi",
+      () => `Greutate ≤ ${milestoneWeight(0.40)} kg`,
+    ]
+  },
+  {
+    label: "Faza 1 — Mers/Alergare alternativ",
+    weeks: "S13-S26",
+    color: "#81c784",
+    why: "Alergi în reprize scurte, cu mers între ele. Corpul primește stimulul de impact în doze pe care tendoanele le pot digera. Doar 2 sesiuni pe săptămână, niciodată în zile consecutive.",
+    days: "Marți și Duminică",
+    gate: [
+      "10 minute de alergare continuă, fără durere",
+      "Durere maximum 2/10 în timpul alergării și dispărută complet în 24h",
+      () => `Greutate ≤ ${milestoneWeight(0.70)} kg`,
+    ]
+  },
+  {
+    label: "Faza 2 — Alergare continuă",
+    weeks: "S27-S39",
+    color: "#ffb74d",
+    why: "Elimini pauzele de mers și construiești durata. Aici crește anduranța cardiovasculară. Adaugi a treia sesiune săptămânală.",
+    days: "Marți, Joi și Duminică",
+    gate: [
+      "30 de minute de alergare continuă",
+      "Zero durere reziduală a doua zi",
+      () => `Greutate ≤ ${milestoneWeight(0.90)} kg`,
+    ]
+  },
+  {
+    label: "Faza 3 — Drumul spre 5 km",
+    weeks: "S40-S52",
+    color: "#e94560",
+    why: "Treci de la minute la kilometri. Ultimele săptămâni construiesc distanța, nu viteza. Ritmul rămâne conversațional până la final.",
+    days: "Marți, Joi și Duminică",
+    gate: [
+      "5 km continuu, ritm constant, fără oprire",
+      "Fără durere care persistă peste 24h",
+    ]
+  },
+];
+
+/* Fiecare săptămână: faza, prescripția sesiunii, nr. de sesiuni.
+   Deload la fiecare a 4-a săptămână — tendoanele se adaptează în repaus. */
+const RUN_WEEKS = [
+  // Faza 0 — S1-S12: fără alergare
+  ...Array.from({ length: 12 }, (_, i) => ({
+    phase: 0, sessions: 0, deload: false,
+    main: "Fără alergare",
+    detail: "Mers înclinat din finisher-ul de la sală + 8.000-10.000 pași zilnic",
+  })),
+
+  // Faza 1 — S13-S26: mers/alergare
+  { phase:1, sessions:2, deload:false, main:"6 × (1 min alergare / 4 min mers)", detail:"30 min total. Alergare foarte lentă — trebuie să poți vorbi." },
+  { phase:1, sessions:2, deload:false, main:"6 × (1,5 min alergare / 3,5 min mers)", detail:"30 min total. Același ritm, doar reprize mai lungi." },
+  { phase:1, sessions:2, deload:false, main:"6 × (2 min alergare / 3 min mers)", detail:"30 min total. Atenție la cadență: pași mici și deși." },
+  { phase:1, sessions:2, deload:true,  main:"DELOAD · 5 × (1,5 min alergare / 3,5 min mers)", detail:"25 min. Reducere intenționată — tendoanele se refac acum." },
+  { phase:1, sessions:2, deload:false, main:"6 × (2,5 min alergare / 2,5 min mers)", detail:"30 min total. Prima săptămână cu mai multă alergare decât mers." },
+  { phase:1, sessions:2, deload:false, main:"6 × (3 min alergare / 2 min mers)", detail:"30 min total." },
+  { phase:1, sessions:2, deload:false, main:"5 × (4 min alergare / 2 min mers)", detail:"30 min total." },
+  { phase:1, sessions:2, deload:true,  main:"DELOAD · 5 × (2 min alergare / 3 min mers)", detail:"25 min." },
+  { phase:1, sessions:2, deload:false, main:"5 × (5 min alergare / 2 min mers)", detail:"35 min total." },
+  { phase:1, sessions:2, deload:false, main:"4 × (6 min alergare / 2 min mers)", detail:"32 min total." },
+  { phase:1, sessions:2, deload:false, main:"4 × (7 min alergare / 2 min mers)", detail:"36 min total." },
+  { phase:1, sessions:2, deload:true,  main:"DELOAD · 4 × (4 min alergare / 2 min mers)", detail:"24 min." },
+  { phase:1, sessions:2, deload:false, main:"3 × (9 min alergare / 2 min mers)", detail:"33 min total." },
+  { phase:1, sessions:2, deload:false, main:"3 × (10 min alergare / 2 min mers)", detail:"36 min. La final: test de 10 min continuu." },
+
+  // Faza 2 — S27-S39: continuu
+  { phase:2, sessions:3, deload:false, main:"12 min alergare continuă", detail:"+ 5 min mers încălzire și 5 min răcire." },
+  { phase:2, sessions:3, deload:false, main:"14 min alergare continuă", detail:"Fără pauze de mers în interior." },
+  { phase:2, sessions:3, deload:false, main:"16 min alergare continuă", detail:"" },
+  { phase:2, sessions:2, deload:true,  main:"DELOAD · 10 min alergare continuă", detail:"Doar 2 sesiuni săptămâna asta." },
+  { phase:2, sessions:3, deload:false, main:"18 min alergare continuă", detail:"" },
+  { phase:2, sessions:3, deload:false, main:"20 min alergare continuă", detail:"Aproximativ 2,5 km la ritm conversațional." },
+  { phase:2, sessions:3, deload:false, main:"22 min alergare continuă", detail:"" },
+  { phase:2, sessions:2, deload:true,  main:"DELOAD · 14 min alergare continuă", detail:"" },
+  { phase:2, sessions:3, deload:false, main:"24 min alergare continuă", detail:"" },
+  { phase:2, sessions:3, deload:false, main:"26 min alergare continuă", detail:"" },
+  { phase:2, sessions:3, deload:false, main:"28 min alergare continuă", detail:"" },
+  { phase:2, sessions:2, deload:true,  main:"DELOAD · 18 min alergare continuă", detail:"" },
+  { phase:2, sessions:3, deload:false, main:"30 min alergare continuă", detail:"~3,8-4 km. Testul de trecere în faza finală." },
+
+  // Faza 3 — S40-S52: kilometri
+  { phase:3, sessions:3, deload:false, main:"3,0 km continuu", detail:"Treci de la minute la distanță. Ritmul rămâne lent." },
+  { phase:3, sessions:3, deload:false, main:"3,3 km continuu", detail:"" },
+  { phase:3, sessions:3, deload:false, main:"3,6 km continuu", detail:"" },
+  { phase:3, sessions:2, deload:true,  main:"DELOAD · 2,5 km continuu", detail:"" },
+  { phase:3, sessions:3, deload:false, main:"3,9 km continuu", detail:"" },
+  { phase:3, sessions:3, deload:false, main:"4,2 km continuu", detail:"" },
+  { phase:3, sessions:3, deload:false, main:"4,5 km continuu", detail:"" },
+  { phase:3, sessions:2, deload:true,  main:"DELOAD · 3,0 km continuu", detail:"" },
+  { phase:3, sessions:3, deload:false, main:"4,7 km continuu", detail:"Aproape acolo." },
+  { phase:3, sessions:3, deload:false, main:"5,0 km continuu", detail:"🎉 Primul tău 5 km. Ritm lent, fără cronometru." },
+  { phase:3, sessions:3, deload:false, main:"5,0 km relaxat", detail:"Confirmi că nu a fost întâmplare." },
+  { phase:3, sessions:2, deload:true,  main:"DELOAD · 3,5 km continuu", detail:"Descărcare înainte de test." },
+  { phase:3, sessions:2, deload:false, main:"TEST: 5 km continuu", detail:"🏁 Obiectivul atins. Ritm constant, fără oprire." },
+];
+
+/* Durata protocolului, în minute (fără cele 5 min de încălzire și 5 de răcire).
+   Săptămânile 1-12 nu au sesiuni de alergare. */
+const RUN_MINS = [
+  0,0,0,0,0,0,0,0,0,0,0,0,
+  30,30,30,25,30,30,30,25,35,32,36,24,33,36,          // faza 1
+  12,14,16,10,18,20,22,14,24,26,28,18,30,             // faza 2
+  23,25,27,19,29,32,32,21,33,35,35,25,35,             // faza 3
+];
+
+/* Setările concrete de bandă. Viteza crește în trepte mici, la mijlocul
+   fiecărei faze — niciodată în aceeași săptămână în care crește durata. */
+function runPace(wi) {
+  if (wi < 12) {
+    return { kind:"walk", walk:"5,5-6,0 km/h", incline:"6-8%",
+             tip:"Mers rapid, nu alergare. Dacă poți cânta, urcă panta; dacă nu poți vorbi, scade-o." };
+  }
+  if (wi < 26) {
+    const k = wi - 12;
+    return { kind:"interval", run: k < 7 ? "7,0 km/h" : "7,5 km/h", walk:"5,5 km/h", incline:"1%",
+             tip:"Panta de 1% imită rezistența aerului de afară. Nu urca peste 2% cât timp alergi." };
+  }
+  if (wi < 39) {
+    const k = wi - 26;
+    return { kind:"run", run: k < 6 ? "7,5 km/h" : "8,0 km/h", walk:"5,5 km/h", incline:"1%",
+             tip:"Dacă nu poți spune o propoziție întreagă, scade cu 0,5 km/h. Durata contează, nu viteza." };
+  }
+  const k = wi - 39;
+  const fast = k >= 6;
+  return { kind:"run", run: fast ? "8,5 km/h" : "8,0 km/h", walk:"5,5 km/h", incline:"1%",
+           tip: fast
+             ? "La 8,5 km/h, 5 km înseamnă ~35 de minute — ăsta e ritmul-țintă pentru test."
+             : "Distanța crește, viteza nu. Urci la 8,5 km/h abia din săptămâna 45." };
+}
+
+/* ============================================================
+   MENIU 7 ZILE — 3 MESE PE ZI, FĂRĂ SUPLIMENTE
+   Antrenament dimineața, 07:00-08:00.
+   Gramajele sunt calibrate pentru ~2.200 kcal în zilele de antrenament și
+   ~1.700 în cele libere. Țintele tale reale se calculează în Setări; dacă
+   diferă cu peste ~10%, ajustează proporțional porțiile de carbohidrați.
+
+   Structura urmează antrenamentul de dimineață:
+     08:30  Masa 1 — CEA MAI MARE, imediat după antrenament.
+            Aici merg carbohidrații, pe mușchiul care tocmai i-a consumat.
+     13:00  Masa 2 — medie. Aici stau alimentele „grele" în micronutrienți
+            (midii joia, ficat vinerea), ca să nu cadă seara.
+     17:30  Masa 3 — CINA, cea mai ușoară. Proteină + legume, puțini
+            carbohidrați. Cu 5 ore înainte de somn.
+
+   Fără suplimente → rotația săptămânală acoperă tot:
+     pește gras 4×, midii 1×, ficat 1×, ouă 6×, leguminoase 5×,
+     semințe/verdețuri/lactate zilnic, 2 nuci braziliene de 2 ori.
+   ============================================================ */
+
+const MENU = [
+  {
+    day: "Luni", training: true, kcal: 2205, p: 171, c: 233, f: 64,
+    meals: [
+      { time: "08:30", name: "Masa 1 — după antrenament", kcal: 895, macro: "P65 · C110 · F21",
+        items: ["Ovăz (uscat) — 80 g", "Iaurt grecesc 2% — 250 g", "Ouă întregi — 2 buc.",
+                "Albuș de ou — 150 g", "Banană — 120 g", "Fructe de pădure — 100 g"],
+        micro: "Carbohidrații zilei merg aici. Colină (gălbenuș), calciu și B12 (iaurt), potasiu (banană)" },
+      { time: "13:00", name: "Masa 2", kcal: 745, macro: "P57 · C86 · F17",
+        items: ["Piept de pui (crud) — 170 g", "Orez basmati (crud) — 80 g", "Broccoli — 200 g",
+                "Ardei roșu — 150 g", "Ulei de măsline — 10 g", "Brânză de vaci degresată — 80 g"],
+        micro: "Vit. C (ardei, broccoli), vit. K, seleniu (pui)" },
+      { time: "17:30", name: "Masa 3 — cina, ușoară", kcal: 565, macro: "P49 · C37 · F26",
+        items: ["Somon — 130 g", "Cartofi dulci (fierți) — 120 g", "Spanac — 150 g",
+                "Brânză de vaci degresată — 150 g", "Ulei de măsline — 5 g"],
+        micro: "🐟 Vitamina D, omega-3 și iod (somon), vit. A (cartof dulce), folat și fier (spanac)" },
+    ]
+  },
+  {
+    day: "Marți", training: true, kcal: 2195, p: 172, c: 231, f: 64,
+    meals: [
+      { time: "08:30", name: "Masa 1 — după antrenament", kcal: 890, macro: "P64 · C108 · F22",
+        items: ["Ovăz (uscat) — 70 g", "Brânză de vaci degresată — 250 g", "Ouă întregi — 2 buc.",
+                "Albuș de ou — 100 g", "Banană — 120 g", "Nuci — 15 g", "Nucă braziliană — 2 buc."],
+        micro: "🥜 Seleniu (2 nuci braziliene acoperă necesarul zilnic), magneziu (nuci, ovăz)" },
+      { time: "13:00", name: "Masa 2", kcal: 750, macro: "P58 · C86 · F18",
+        items: ["Piept de curcan (crud) — 170 g", "Quinoa (crudă) — 75 g", "Kale sau varză creață — 150 g",
+                "Morcov — 150 g", "Ulei de măsline — 10 g", "Iaurt grecesc 2% — 100 g"],
+        micro: "Vit. A (morcov), vit. K și calciu vegetal (kale), toți aminoacizii esențiali (quinoa)" },
+      { time: "17:30", name: "Masa 3 — cina, ușoară", kcal: 555, macro: "P50 · C37 · F24",
+        items: ["Vită slabă (crudă) — 150 g", "Cartofi (fierți) — 150 g", "Fasole verde — 200 g",
+                "Roșii — 150 g", "Ulei de măsline — 5 g"],
+        micro: "Fier hemic și zinc (vită), potasiu (cartofi), licopen (roșii)" },
+    ]
+  },
+  {
+    day: "Miercuri", training: true, kcal: 2200, p: 170, c: 234, f: 63,
+    meals: [
+      { time: "08:30", name: "Masa 1 — după antrenament", kcal: 900, macro: "P63 · C112 · F21",
+        items: ["Pâine integrală — 100 g", "Ouă întregi — 3 buc.", "Albuș de ou — 150 g",
+                "Iaurt grecesc 2% — 200 g", "Măr — 150 g", "Semințe de dovleac — 12 g"],
+        micro: "Colină (3 gălbenușuri ≈ 60% din necesar), zinc și magneziu (semințe de dovleac)" },
+      { time: "13:00", name: "Masa 2", kcal: 745, macro: "P56 · C86 · F18",
+        items: ["Macrou (la cuptor sau conservă scursă) — 130 g", "Paste integrale (crude) — 80 g",
+                "Roșii — 200 g", "Spanac — 100 g", "Usturoi și busuioc — după gust"],
+        micro: "🐟 Vitamina D și omega-3 (macroul e printre cele mai bogate surse), fibre" },
+      { time: "17:30", name: "Masa 3 — cina, ușoară", kcal: 555, macro: "P51 · C36 · F24",
+        items: ["Piept de pui (crud) — 150 g", "Năut (fiert) — 120 g", "Broccoli — 200 g",
+                "Salată verde — 100 g", "Ulei de măsline — 8 g", "Brânză de vaci degresată — 100 g"],
+        micro: "Folat și fibre (năut), vit. C (broccoli) care ajută absorbția fierului" },
+    ]
+  },
+  {
+    day: "Joi", training: true, kcal: 2190, p: 173, c: 229, f: 64,
+    meals: [
+      { time: "08:30", name: "Masa 1 — după antrenament", kcal: 890, macro: "P64 · C109 · F21",
+        items: ["Ovăz (uscat) — 80 g", "Iaurt grecesc 2% — 300 g", "Ouă întregi — 2 buc.",
+                "Albuș de ou — 100 g", "Fructe de pădure — 150 g", "Semințe de floarea-soarelui — 12 g"],
+        micro: "Vitamina E (semințe de floarea-soarelui), calciu și iod (iaurt)" },
+      { time: "13:00", name: "Masa 2", kcal: 750, macro: "P59 · C85 · F18",
+        items: ["🌟 Midii (fără cochilie) — 200 g", "Cartofi (fierți) — 300 g", "Ardei — 150 g",
+                "Salată verde — 100 g", "Ulei de măsline — 10 g", "Lămâie — după gust"],
+        micro: "🌟 Cea mai densă masă a săptămânii: 200 g de midii acoperă de ~20 ori necesarul de B12, plus zinc, fier, seleniu și iod" },
+      { time: "17:30", name: "Masa 3 — cina, ușoară", kcal: 550, macro: "P50 · C35 · F25",
+        items: ["Cod sau merluciu — 170 g", "Mazăre verde — 150 g", "Dovlecel și vinete — 200 g",
+                "Iaurt grecesc 2% — 150 g", "Ulei de măsline — 10 g"],
+        micro: "Iod (cod), vit. C și K (mazăre), proteină slabă seara — se digeră ușor" },
+    ]
+  },
+  {
+    day: "Vineri", training: true, kcal: 2200, p: 172, c: 232, f: 64,
+    meals: [
+      { time: "08:30", name: "Masa 1 — după antrenament", kcal: 895, macro: "P64 · C110 · F22",
+        items: ["Pâine integrală — 100 g", "Ouă întregi — 2 buc.", "Albuș de ou — 150 g",
+                "Brânză de vaci degresată — 200 g", "Banană — 120 g", "Migdale — 15 g"],
+        micro: "Vit. E și magneziu (migdale), calciu (brânză de vaci), potasiu (banană)" },
+      { time: "13:00", name: "Masa 2", kcal: 750, macro: "P58 · C86 · F18",
+        items: ["🌟 Ficat de vită — 120 g", "Piept de pui (crud) — 90 g", "Orez basmati (crud) — 70 g",
+                "Sfeclă roșie — 100 g", "Salată verde și rucola — 150 g", "Ulei de măsline — 10 g"],
+        micro: "🌟 Ficatul acoperă într-o singură masă necesarul săptămânal de vitamina A, plus B12, folat, fier, cupru și colină. Niciun alt aliment nu se apropie." },
+      { time: "17:30", name: "Masa 3 — cina, ușoară", kcal: 555, macro: "P50 · C36 · F24",
+        items: ["Piept de curcan (crud) — 160 g", "Linte (fiartă) — 120 g", "Legume mixte la abur — 250 g",
+                "Ulei de măsline — 8 g", "Iaurt grecesc 2% — 100 g"],
+        micro: "Fier și folat (linte), fibre din legume — cină ușoară înainte de weekend" },
+    ]
+  },
+  {
+    day: "Sâmbătă", training: false, kcal: 1700, p: 170, c: 126, f: 57,
+    meals: [
+      { time: "08:30", name: "Masa 1", kcal: 600, macro: "P58 · C50 · F19",
+        items: ["Ouă întregi — 2 buc.", "Albuș de ou — 150 g", "Pâine integrală — 70 g",
+                "Iaurt grecesc 2% — 250 g", "Roșii și castraveți — 200 g"],
+        micro: "Colină, calciu, proteină slabă. Zi liberă → mai puțini carbohidrați peste tot" },
+      { time: "13:00", name: "Masa 2", kcal: 560, macro: "P56 · C41 · F19",
+        items: ["Somon — 150 g", "Cartofi (fierți) — 150 g", "Salată mare (frunze, castravete, ceapă roșie) — 250 g",
+                "Avocado — 50 g", "Ulei de măsline — 5 g"],
+        micro: "🐟 Vitamina D și omega-3 (somon), grăsimi mononesaturate și potasiu (avocado)" },
+      { time: "17:30", name: "Masa 3 — cina, ușoară", kcal: 540, macro: "P56 · C35 · F19",
+        items: ["Piept de curcan (crud) — 170 g", "Linte (fiartă) — 120 g", "Varză și morcov — 200 g",
+                "Ardei — 150 g", "Ulei de măsline — 6 g"],
+        micro: "Fier și folat (linte), vit. C (ardei) care îi triplează absorbția" },
+    ]
+  },
+  {
+    day: "Duminică", training: false, kcal: 1695, p: 169, c: 124, f: 58,
+    meals: [
+      { time: "08:30", name: "Masa 1", kcal: 595, macro: "P57 · C48 · F20",
+        items: ["Ouă întregi — 2 buc.", "Albuș de ou — 150 g", "Pâine integrală — 70 g",
+                "Brânză de vaci degresată — 200 g", "Rucola și roșii — 150 g", "Nucă braziliană — 2 buc."],
+        micro: "🥜 Seleniu (nuci braziliene), colină (ouă), vit. K (rucola)" },
+      { time: "13:00", name: "Masa 2", kcal: 560, macro: "P56 · C41 · F19",
+        items: ["Sardine în ulei (scurse, cu oase) — 130 g", "Cartofi (fierți) — 150 g",
+                "Salată verde — 200 g", "Ardei — 100 g", "Ulei de măsline — 5 g"],
+        micro: "🐟 Sardinele cu oase sunt una dintre puținele surse alimentare serioase de calciu + vitamina D + omega-3 simultan" },
+      { time: "17:30", name: "Masa 3 — cina, ușoară", kcal: 540, macro: "P56 · C35 · F19",
+        items: ["Vită slabă (crudă) — 150 g", "Cartofi dulci (fierți) — 130 g", "Varză de Bruxelles — 200 g",
+                "Ceapă și usturoi — după gust", "Iaurt grecesc 2% — 100 g", "Ulei de măsline — 6 g"],
+        micro: "Zinc și fier (vită), vit. C și K (varză de Bruxelles), vit. A (cartof dulce)" },
+    ]
+  },
+];
+
+/* Fără suplimente: mai jos e cum se acoperă fiecare micronutrient din farfurie
+   și singurul la care alimentația chiar nu ajunge. */
+const MICRO_COVER = [
+  { n: "Vitamina B12", src: "Midii (joi), ficat (vineri), vită, pește, lactate", ok: true },
+  { n: "Fier", src: "Ficat, vită, midii, linte și năut + vitamina C la aceeași masă", ok: true },
+  { n: "Calciu", src: "Iaurt grecesc și brânză de vaci zilnic, sardine cu oase, kale", ok: true },
+  { n: "Magneziu", src: "Semințe de dovleac și in, nuci, ovăz, spanac, leguminoase", ok: true },
+  { n: "Zinc", src: "Midii, vită, semințe de dovleac, năut", ok: true },
+  { n: "Seleniu", src: "2 nuci braziliene (marți, duminică), pește, ouă", ok: true },
+  { n: "Iod", src: "Cod, somon, midii, lactate, sare iodată", ok: true },
+  { n: "Folat", src: "Ficat, spanac, linte, năut, rucola, broccoli", ok: true },
+  { n: "Vitamina A", src: "Ficat (vineri), morcov, cartof dulce, kale", ok: true },
+  { n: "Vitamina C", src: "Ardei roșu, broccoli, varză de Bruxelles, roșii, fructe de pădure", ok: true },
+  { n: "Vitamina K", src: "Spanac, kale, rucola, broccoli, varză", ok: true },
+  { n: "Vitamina E", src: "Migdale, semințe de floarea-soarelui, ulei de măsline, avocado", ok: true },
+  { n: "Colină", src: "Ouă (aproape zilnic), ficat", ok: true },
+  { n: "Omega-3 (EPA/DHA)", src: "Pește gras de 4 ori pe săptămână: somon, macrou, sardine", ok: true },
+  { n: "Potasiu", src: "Cartofi, cartof dulce, banană, spanac, leguminoase", ok: true },
+  { n: "Vitamina D", src: "Somon, macrou, sardine, gălbenuș — acoperă parțial. Vezi nota de mai jos.", ok: false },
+];
+
+const RUN_RULES = [
+  { icon:"🦶", title:"Cadență 170-180 pași/minut", text:"Pași mici și deși, nu pași lungi. Cadența mare scade forța de impact pe genunchi cu până la 20%. Cel mai important element tehnic pentru tine." },
+  { icon:"🛣️", title:"Suprafață moale", text:"Bandă de alergare, pistă de tartan sau alee de pământ. Evită betonul și asfaltul cât poți. Banda are și avantajul că poți controla exact ritmul." },
+  { icon:"👟", title:"Încălțăminte de alergare adevărată", text:"Nu adidași de sală. Amortizare bună, înlocuiți la fiecare 600-800 km. Merită mersul la un magazin cu analiză de pas." },
+  { icon:"🚦", title:"Regula durerii 0-3", text:"Disconfort până la 3/10 în timpul alergării e acceptabil DACĂ dispare complet în 24 de ore. Peste 3/10, sau durere care persistă a doua zi: te întorci o săptămână în plan." },
+  { icon:"⚡", title:"Durere nervoasă = stop imediat", text:"Înțepătură, arsură, furnicături sau amorțeală care coboară pe picior — oprești sesiunea pe loc. Durerea nervoasă nu se „încălzește” niciodată." },
+  { icon:"📈", title:"Maximum +10% pe săptămână", text:"Regula de aur în alergare. Planul o respectă deja — nu o depăși din entuziasm într-o zi bună." },
+  { icon:"🗓️", title:"Niciodată două zile la rând", text:"Impactul are nevoie de 48 de ore de recuperare pentru tendoane și cartilaj. Alergările sunt plasate Marți / Joi / Duminică tocmai ca să evite zilele de picioare (Miercuri și Vineri)." },
 ];
 
 const STORAGE_KEY = 'gymProgress2W';
 const WEIGHTS_KEY = 'gymWeights2W';
+const RUN_KEY = 'gymRunProgress';       // { 'r{week}s{session}': true }
+const PROGRAM_START_KEY = 'gymProgramStart'; // 'YYYY-MM-DD'
 
+/* ============================================================
+   CONFIGURARE PERSONALĂ
+   Datele tale (vârstă, înălțime, greutate) NU sunt scrise în cod —
+   stau doar în localStorage, pe dispozitivul tău. Codul din repo
+   e complet generic, deci se poate publica public fără să expună
+   nimic despre tine. Valorile de mai jos sunt exemple neutre.
+   ============================================================ */
+const CFG_KEY = 'gymUserConfig';
+const CFG_DEFAULTS = {
+  name: '', age: 35, sex: 'm', height: 178, weight: 82, target: 75,
+};
+
+function getCfg() {
+  return { ...CFG_DEFAULTS, ...JSON.parse(localStorage.getItem(CFG_KEY) || '{}') };
+}
+function saveCfg(c) { localStorage.setItem(CFG_KEY, JSON.stringify(c)); }
+function isConfigured() { return !!localStorage.getItem(CFG_KEY); }
+
+/* Toate țintele se calculează din configurare, nimic nu e hardcodat.
+   Mifflin-St Jeor pentru metabolismul bazal; factor 1,55 în zilele de
+   antrenament (5 sesiuni + ~10.000 pași) și 1,40 în zilele libere. */
+function calcTargets() {
+  const c = getCfg();
+  const bmr = Math.round(
+    10 * c.weight + 6.25 * c.height - 5 * c.age + (c.sex === 'm' ? 5 : -161)
+  );
+  const tdeeTrain = Math.round(bmr * 1.55);
+  const tdeeRest = Math.round(bmr * 1.40);
+  const r25 = v => Math.round(v / 25) * 25;
+  // Deficitul e fix în kcal, deci pentru o persoană mai mică ar coborî sub
+  // metabolismul bazal. Plafon de siguranță: niciodată sub BMR în zilele
+  // libere, niciodată sub BMR × 1,15 în zilele cu antrenament.
+  const c25 = v => Math.ceil(v / 25) * 25; // plafonul se rotunjește în SUS
+  const kcalTrain = Math.max(r25(tdeeTrain - 410), c25(bmr * 1.15));
+  const kcalRest = Math.max(r25(tdeeRest - 660), c25(bmr));
+  const protein = Math.round(c.weight * 2.1 / 5) * 5;
+  const fat = Math.round(c.weight * 0.8 / 5) * 5;
+  const carbTrain = Math.round((kcalTrain - protein * 4 - fat * 9) / 4);
+  const carbRest = Math.round((kcalRest - protein * 4 - (fat - 7) * 9) / 4);
+
+  const avgDeficit = Math.round((5 * (tdeeTrain - kcalTrain) + 2 * (tdeeRest - kcalRest)) / 7);
+  const kgPerWeek = avgDeficit * 7 / 7700;
+  const toLose = Math.max(0, c.weight - c.target);
+  const weeks = kgPerWeek > 0 ? Math.ceil(toLose / kgPerWeek) : 0;
+  const eta = weeks ? addDays(atMidnight(new Date()), weeks * 7) : null;
+
+  return { ...c, bmr, tdeeTrain, tdeeRest, kcalTrain, kcalRest, protein, fat,
+           carbTrain, carbRest, avgDeficit, kgPerWeek, toLose, weeks, eta };
+}
+
+// Interpolează o greutate intermediară între start și țintă (pentru
+// criteriile de trecere din planul de alergare).
+function milestoneWeight(fraction) {
+  const c = getCfg();
+  return Math.round(c.weight - (c.weight - c.target) * fraction);
+}
+
+/* ============================================================
+   DATE — zi/lună/an
+   Programul are o dată de start; din ea se calculează în ce
+   săptămână ești și ce dată are fiecare zi de antrenament.
+   ============================================================ */
+
+function fmtDMY(d) {
+  const p = n => String(n).padStart(2, '0');
+  return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+function fmtDM(d) {
+  const p = n => String(n).padStart(2, '0');
+  return `${p(d.getDate())}/${p(d.getMonth() + 1)}`;
+}
+function isoKey(d) {
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+function atMidnight(d) { const x = new Date(d); x.setHours(0, 0, 0, 0); return x; }
+function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
+
+function getProgramStart() {
+  let s = localStorage.getItem(PROGRAM_START_KEY);
+  if (!s) {
+    // Implicit: lunea care urmează (sau azi, dacă azi e luni). Planul e
+    // Luni-Vineri — dacă am ancora la lunea trecută, săptămâna 1 ar afișa
+    // zile de antrenament deja consumate.
+    const t = atMidnight(new Date());
+    const dow = (t.getDay() + 6) % 7; // 0 = luni
+    s = isoKey(dow === 0 ? t : addDays(t, 7 - dow));
+    localStorage.setItem(PROGRAM_START_KEY, s);
+  }
+  const [y, m, dd] = s.split('-').map(Number);
+  return atMidnight(new Date(y, m - 1, dd));
+}
+function setProgramStart(d) {
+  localStorage.setItem(PROGRAM_START_KEY, isoKey(d));
+}
+
+// Luni a săptămânii în care începe programul. Zilele planului sunt
+// Luni-Vineri, deci ancorăm totul la luni indiferent de ziua de start.
+function programStartMonday() {
+  const s = getProgramStart();
+  const dow = (s.getDay() + 6) % 7; // 0 = luni
+  return addDays(s, -dow);
+}
+function dayDate(weekIdx, dayIdx) {
+  return addDays(programStartMonday(), weekIdx * 7 + dayIdx);
+}
+// Săptămâna curentă (1-based) după calendar; poate depăși 12 sau 52.
+function currentWeekNumber() {
+  const diff = atMidnight(new Date()) - programStartMonday();
+  return Math.floor(diff / (7 * 24 * 3600 * 1000)) + 1;
+}
+function programDayNumber() {
+  const diff = atMidnight(new Date()) - getProgramStart();
+  return Math.floor(diff / (24 * 3600 * 1000)) + 1;
+}
+
+// Pași de 2,5 kg până la 60 — recomandările folosesc jumătăți de placă.
 const WEIGHT_OPTIONS = [];
-for (let kg = 5; kg <= 50; kg += 5) WEIGHT_OPTIONS.push(kg);
+for (let kg = 2.5; kg <= 60; kg += 2.5) WEIGHT_OPTIONS.push(kg);
+for (let kg = 65; kg <= 120; kg += 5) WEIGHT_OPTIONS.push(kg);
+for (let kg = 130; kg <= 200; kg += 10) WEIGHT_OPTIONS.push(kg);
+
+/* ============================================================
+   GREUTĂȚI PROGRESIVE
+   Recomandarea pornește din `base` (sau din baza ta personalizată)
+   și se ajustează după fază și după săptămâna din interiorul fazei.
+   ============================================================ */
+const PHASE_LOAD = [1.00, 1.20, 1.10]; // faza 1 (12-15 rep), 2 (8-10 rep), 3 (10-15 rep)
+// Acumulare, încărcare (+5%), vârf (+10%), deload (-20%). Incrementele sunt
+// procentuale, deci exercițiile mari urcă vizibil, iar izolările mici aproape
+// deloc — corect: la ele progresezi din repetări, nu din greutate.
+const WEEK_LOAD  = [1.00, 1.05, 1.10, 0.80];
+
+function getExerciseBase(ex) {
+  const v = parseFloat(getWeights()[`base_${ex.id}`]);
+  return (!isNaN(v) && v > 0) ? v : ex.base;
+}
+function recommendedKg(ex, weekIdx) {
+  const raw = getExerciseBase(ex) * PHASE_LOAD[ex.phase] * WEEK_LOAD[weekIdx % 4];
+  const step = ex.step || 2.5;
+  return Math.max(step, Math.round(raw / step) * step);
+}
+function fmtKg(v) {
+  return (Math.round(v * 10) / 10).toString().replace('.', ',');
+}
+function editBase(exId, current) {
+  const input = prompt(
+    'Greutatea ta de referință pentru acest exercițiu (kg, la 12-15 repetări).\n' +
+    'Toate recomandările din cele 12 săptămâni se recalculează din ea.',
+    String(current).replace('.', ',')
+  );
+  if (input === null) return;
+  const v = parseFloat(String(input).replace(',', '.'));
+  const w = getWeights();
+  if (isNaN(v) || v <= 0) delete w[`base_${exId}`];
+  else w[`base_${exId}`] = v;
+  saveWeights(w);
+  render();
+}
 
 function getWeights() {
   return JSON.parse(localStorage.getItem(WEIGHTS_KEY) || '{}');
@@ -748,13 +1970,13 @@ function buildWeightSelect(key, current) {
   let opts = `<option value="">—</option>`;
   WEIGHT_OPTIONS.forEach(v => {
     const sel = (String(current) === String(v)) ? ' selected' : '';
-    opts += `<option value="${v}"${sel}>${v} kg</option>`;
+    opts += `<option value="${v}"${sel}>${fmtKg(v)} kg</option>`;
   });
   return `<select class="weight-select" data-key="${key}" onchange="setWeight(this.dataset.key, this.value)">${opts}</select>`;
 }
 
 let activeWeek = parseInt(localStorage.getItem('activeWeek') || '0', 10);
-if (![0,1].includes(activeWeek)) activeWeek = 0;
+if (!Number.isInteger(activeWeek) || activeWeek < 0 || activeWeek >= weeks.length) activeWeek = 0;
 
 function getProgress() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
@@ -773,10 +1995,23 @@ function render() {
   const progress = getProgress();
   const weights = getWeights();
 
+  const banner = document.getElementById('phaseBanner');
+  banner.className = 'phase-banner' + (week.deload ? ' is-deload' : '');
+  const wkStart = dayDate(activeWeek, 0), wkEnd = dayDate(activeWeek, 6);
+  const isCurrentWeek = currentWeekNumber() === activeWeek + 1;
+  banner.innerHTML = `
+    <div class="pb-phase">${week.phase}</div>
+    <div class="pb-week">Săptămâna ${activeWeek + 1} din 12${week.deload ? ' · Deload' : ''}</div>
+    <div class="pb-dates">📅 ${fmtDMY(wkStart)} – ${fmtDMY(wkEnd)}${isCurrentWeek ? ' <span class="pb-now">săptămâna curentă</span>' : ''}</div>
+    <div class="pb-focus">${week.focus}</div>
+    <div class="pb-intent">🎯 ${week.intent}</div>`;
+
   week.days.forEach((day, di) => {
     const tab = document.createElement('div');
-    tab.className = 'tab' + (di === 0 ? ' active' : '');
-    tab.innerHTML = `<span class="day-label">${day.day}</span>${day.name.split(' & ')[0].split(' (')[0]}`;
+    const dDate = dayDate(activeWeek, di);
+    const isToday = isoKey(dDate) === isoKey(new Date());
+    tab.className = 'tab' + (di === 0 ? ' active' : '') + (isToday ? ' is-today' : '');
+    tab.innerHTML = `<span class="day-label">${day.day} · ${fmtDM(dDate)}</span>${day.short}`;
     tab.onclick = () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.day-content').forEach(d => d.classList.remove('active'));
@@ -790,6 +2025,7 @@ function render() {
     section.id = 'day-' + di;
 
     let html = `<div class="day-header">
+      <div class="day-date">📅 ${fmtDMY(dDate)}${isToday ? ' <span class="day-today-badge">AZI</span>' : ''}</div>
       <h2>${day.day} — ${day.name}</h2>
       <div class="muscles-targeted">${day.muscles}</div>
       <div class="duration">⏱ Durată: ~1 oră</div>
@@ -829,6 +2065,10 @@ function render() {
               <span class="badge sets">${ex.sets} Seturi</span>
               <span class="badge reps">${ex.reps} Reps</span>
               <span class="badge rest">Pauză ${ex.rest}</span>
+              <span class="badge weight" title="Recomandare calculată din greutatea ta de referință, faza și săptămâna curentă">
+                🎯 ${fmtKg(recommendedKg(ex, activeWeek))} kg
+                <button class="badge-edit" onclick="editBase('${ex.id}', ${getExerciseBase(ex)})" title="Schimbă greutatea de referință">&#9998;</button>
+              </span>
             </div>
           </div>
           <div class="hoist-panel">
@@ -839,6 +2079,15 @@ function render() {
           </div>
         </div>
         <div class="exercise-note">${ex.note}</div>
+        ${ex.alt ? `<div class="alt-row">
+          <span class="alt-equip">${ex.alt.equip === 'Kettlebell' ? '🔔' : '🏋'} ${ex.alt.equip}</span>
+          <div class="alt-body">
+            <div class="alt-name">${ex.alt.name}
+              <a class="alt-video" href="https://www.youtube.com/results?search_query=${encodeURIComponent(ex.alt.name + ' proper form technique')}" target="_blank" rel="noopener">&#9654; video</a>
+            </div>
+            <div class="alt-note">${ex.alt.note}</div>
+          </div>
+        </div>` : ''}
         <div class="weight-row">
           <div class="weight-box start">
             <span class="weight-label">🚀 Start (kg)</span>
@@ -853,12 +2102,28 @@ function render() {
       for (let s = 1; s <= ex.sets; s++) {
         const setKey = `${key}s${s}`;
         const done = progress[setKey] ? ' done' : '';
-        html += `<button class="set-check${done}" data-key="${setKey}" onclick="toggleSet(this)">${done ? '&#10003;' : s}</button>`;
+        html += `<button class="set-check${done}" data-key="${setKey}" data-off="${s}" onclick="toggleSet(this)">${done ? '&#10003;' : s}</button>`;
       }
       html += `<button class="rest-btn" onclick="startRest(${ex.restSec}, '${ex.name.replace(/'/g, "\\'")}')">&#9201; Pornire pauză ${ex.rest}</button>`;
       html += `<button class="ex-reset-btn" onclick="resetExercise(${di}, ${ei}, ${ex.sets})" title="Resetează seturile și ultima serie — păstrează Start kg">&#x21bb; Reset exercițiu</button>`;
       html += `</div></div>`;
     });
+
+    // ----- Cardio finisher (după partea de forță) -----
+    const finKey = `w${activeWeek}d${di}fin`;
+    const finDone = progress[finKey] ? ' done' : '';
+    html += `<div class="finisher-section">
+      <h3>🚴 Cardio Finisher</h3>
+      <div class="finisher-subtitle">Imediat după partea de forță — fără impact pe genunchi și sciatic</div>
+      <div class="finisher-card">
+        <div style="flex:1;min-width:180px">
+          <h4>${day.finisher.name}</h4>
+          <p>${day.finisher.note}</p>
+          <span class="finisher-dose">${day.finisher.dose}</span>
+        </div>
+        <button class="finisher-check${finDone}" data-key="${finKey}" onclick="toggleSet(this)">${finDone ? '&#10003;' : '✓'}</button>
+      </div>
+    </div>`;
 
     // ----- Spine & Sciatic Recovery (in fiecare zi) -----
     html += `<div class="spine-section">
@@ -895,13 +2160,18 @@ function getTotalSets() {
     day.exercises.forEach(ex => total += ex.sets);
     total += spineRecovery.length; // include exercițiile de recuperare zilnice
     total += warmupExercises.length; // include exercițiile de încălzire zilnice
+    total += 1; // cardio finisher
   });
   return total;
 }
 
+// Atenție: cheile sunt `w{N}d{...}` — prefixul trebuie să includă „d”,
+// altfel „w1” s-ar potrivi și cu w10 / w11.
+function weekPrefix(i) { return `w${i}d`; }
+
 function getDoneSets() {
   const progress = getProgress();
-  const prefix = `w${activeWeek}`;
+  const prefix = weekPrefix(activeWeek);
   return Object.keys(progress).filter(k => k.startsWith(prefix)).length;
 }
 
@@ -919,7 +2189,8 @@ function toggleSet(btn) {
   if (progress[key]) {
     delete progress[key];
     btn.classList.remove('done');
-    btn.innerHTML = key.split('s').pop();
+    // data-off = eticheta în starea nebifată (numărul seriei, sau ✓ pentru carduri)
+    btn.innerHTML = btn.dataset.off || '✓';
   } else {
     progress[key] = true;
     btn.classList.add('done');
@@ -929,16 +2200,32 @@ function toggleSet(btn) {
   updateProgress();
 }
 
-/* -------------- WEEK SWITCH -------------- */
-document.getElementById('week1Btn').onclick = () => switchWeek(0);
-document.getElementById('week2Btn').onclick = () => switchWeek(1);
+/* -------------- WEEK SWITCH (12 săptămâni) -------------- */
+const weekPills = document.getElementById('weekPills');
+
+function buildWeekPills() {
+  weekPills.innerHTML = '';
+  weeks.forEach((w, i) => {
+    const b = document.createElement('button');
+    b.className = 'week-btn' + (w.deload ? ' deload' : '') + (i === activeWeek ? ' active' : '');
+    b.textContent = `S${i + 1}`;
+    b.title = `Săptămâna ${i + 1} — ${w.phase}${w.deload ? ' (deload)' : ''}`;
+    b.onclick = () => switchWeek(i);
+    weekPills.appendChild(b);
+  });
+  // Centrează săptămâna activă în rândul derulabil (fără să mute pagina).
+  const active = weekPills.querySelector('.week-btn.active');
+  if (active) {
+    weekPills.scrollLeft = active.offsetLeft - weekPills.clientWidth / 2 + active.offsetWidth / 2;
+  }
+}
 
 function switchWeek(i) {
   activeWeek = i;
   localStorage.setItem('activeWeek', i);
-  document.getElementById('week1Btn').classList.toggle('active', i === 0);
-  document.getElementById('week2Btn').classList.toggle('active', i === 1);
+  buildWeekPills();
   render();
+  measureSticky();
 }
 
 /* -------------- RESET BUTTON -------------- */
@@ -950,8 +2237,9 @@ document.getElementById('confirmYes').onclick = () => {
   // Greutățile de Start rămân neatinse.
   const progress = getProgress();
   const weights = getWeights();
-  Object.keys(progress).forEach(k => { if (k.startsWith(`w${activeWeek}`)) delete progress[k]; });
-  Object.keys(weights).forEach(k => { if (k.startsWith(`last_w${activeWeek}`)) delete weights[k]; });
+  const prefix = weekPrefix(activeWeek);
+  Object.keys(progress).forEach(k => { if (k.startsWith(prefix)) delete progress[k]; });
+  Object.keys(weights).forEach(k => { if (k.startsWith(`last_${prefix}`)) delete weights[k]; });
   saveProgress(progress);
   saveWeights(weights);
   confirmOverlay.classList.remove('active');
@@ -1037,10 +2325,697 @@ function playBeep() {
   if (navigator.vibrate) navigator.vibrate([200, 80, 200]);
 }
 
+/* ============================================================
+   OBICEIURI ZILNICE
+   5 obiceiuri · bifare zilnică · serie de 7 zile · reset la o zi ratată
+   Stocare separată de progresul din sală, ca să nu se influențeze reciproc.
+   ============================================================ */
+const HABITS_KEY = 'gymHabitLog';        // { habitId: { 'YYYY-MM-DD': true } }
+const HABIT_NAMES_KEY = 'gymHabitNames'; // { habitId: 'nume personalizat' }
+
+const HABITS = [
+  { id: 'h1', icon: '💧', name: '2,5–3 L apă' },
+  { id: 'h2', icon: '🥩', name: null, dyn: () => `${calcTargets().protein} g proteină` },
+  { id: 'h3', icon: '👟', name: '8.000–10.000 pași' },
+  { id: 'h4', icon: '🧘', name: 'Rutina coloană & sciatic (10 min)' },
+  { id: 'h5', icon: '😴', name: '7+ ore de somn' },
+];
+
+/* Cei 10.000 de pași par mulți pentru că îi gândim ca pe un bloc.
+   Împărțiți pe zi, sunt 3 plimbări de 15 minute plus ce faci oricum. */
+const STEP_PLAN = [
+  { time: "07:50", label: "Finisher-ul de la sală", dur: "10-15 min", steps: "~1.500",
+    why: "Mersul înclinat de la finalul antrenamentului. Îl faci oricum — și ai deja primii pași bifați înainte de ora 08:00." },
+  { time: "09:00", label: "După masa 1", dur: "15 min", steps: "~2.000",
+    why: "Masa 1 e cea mai mare a zilei. O plimbare la 30 de minute după ea aplatizează cel mai mare vârf de glicemie pe care îl ai." },
+  { time: "13:30", label: "După masa 2", dur: "15 min", steps: "~2.000",
+    why: "Aceeași logică. Plus că te scoate din scaun fix la mijlocul zilei, când spatele începe să se plângă." },
+  { time: "18:00", label: "După cină", dur: "15 min", steps: "~2.000",
+    why: "Cina e la 17:30, deci ai toată seara liberă. Mersul lent după masă ajută digestia și te adoarme mai ușor." },
+  { time: "din oră în oră", label: "Ridică-te din scaun", dur: "2-3 min", steps: "~2.500",
+    why: "Statul prelungit îți irită sciaticul mai mult decât orice exercițiu din sală. Astea sunt cele mai importante minute din zi pentru spatele tău." },
+];
+
+// Cheie de dată LOCALĂ — toISOString() ar folosi UTC și ar muta ziua.
+function dateKey(d) {
+  const p = n => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+}
+function dayOffsetKey(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() - offset);
+  return dateKey(d);
+}
+
+function getHabitLog() { return JSON.parse(localStorage.getItem(HABITS_KEY) || '{}'); }
+function saveHabitLog(l) { localStorage.setItem(HABITS_KEY, JSON.stringify(l)); }
+function getHabitNames() { return JSON.parse(localStorage.getItem(HABIT_NAMES_KEY) || '{}'); }
+// `dyn` = nume calculat din configurare (ex. ținta de proteină).
+function habitName(h) { return getHabitNames()[h.id] || (h.dyn ? h.dyn() : h.name); }
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Serie = zile consecutive bifate, numărate înapoi începând de azi.
+// Dacă azi nu e încă bifat pornim de ieri (ziua curentă nu s-a terminat),
+// deci seria nu pare ruptă dimineața. O zi ratată o rupe.
+function habitStreak(id) {
+  const log = getHabitLog()[id] || {};
+  const start = log[dayOffsetKey(0)] ? 0 : 1;
+  let streak = 0;
+  for (let i = start; i < 400; i++) {
+    if (!log[dayOffsetKey(i)]) break;
+    streak++;
+  }
+  return streak;
+}
+
+function renderHabits() {
+  const view = document.getElementById('habitsView');
+  const log = getHabitLog();
+  const today = dayOffsetKey(0);
+  const doneToday = HABITS.filter(h => (log[h.id] || {})[today]).length;
+  const dateLabel = new Date().toLocaleDateString('ro-RO', { weekday: 'long', day: 'numeric', month: 'long' });
+
+  let html = `<div class="habits-wrap">
+    <div class="habits-head">
+      <h2>Obiceiuri zilnice</h2>
+      <div class="habits-date">${dateLabel}</div>
+    </div>`;
+
+  HABITS.forEach(h => {
+    const hl = log[h.id] || {};
+    const done = !!hl[today];
+    const streak = habitStreak(h.id);
+    const streakCls = streak === 0 ? ' zero' : (streak >= 7 ? ' full' : '');
+
+    let dots = '';
+    for (let i = 6; i >= 0; i--) {
+      const k = dayOffsetKey(i);
+      dots += `<div class="habit-dot${hl[k] ? ' filled' : ''}${i === 0 ? ' today' : ''}" title="${k}"></div>`;
+    }
+
+    html += `<div class="habit-card${done ? ' done' : ''}">
+      <div class="habit-icon">${h.icon}</div>
+      <div class="habit-body">
+        <div class="habit-name">
+          <span>${escapeHtml(habitName(h))}</span>
+          <button class="habit-edit" onclick="renameHabit('${h.id}')" title="Redenumește">&#9998;</button>
+        </div>
+        <div class="habit-meta">
+          <span class="habit-streak${streakCls}">🔥 ${streak} ${streak === 1 ? 'zi' : 'zile'}${streak >= 7 ? ' 🏆' : ''}</span>
+          <div class="habit-dots">${dots}</div>
+        </div>
+      </div>
+      <button class="habit-check${done ? ' done' : ''}" onclick="toggleHabit('${h.id}', this)"
+              aria-pressed="${done}" aria-label="${escapeHtml(habitName(h))}">
+        <span class="ring"></span>
+        <svg viewBox="0 0 24 24"><path d="M4 12.5 L9.5 18 L20 6.5"/></svg>
+      </button>
+    </div>`;
+  });
+
+  const allDone = doneToday === HABITS.length;
+  html += `<div class="habits-summary">
+      <div class="hs-count">${doneToday} / ${HABITS.length}</div>
+      <div class="hs-label">bifate azi</div>
+      <div class="hs-note">${allDone
+        ? '🎉 Zi completă. Astea 5 obiceiuri fac diferența, nu antrenamentul singur.'
+        : 'Seria se rupe dacă sari o zi. Consecvența bate intensitatea.'}</div>
+    </div>`;
+
+  // ---- Când faci cei 10.000 de pași ----
+  const restDay = [5, 6].includes(todayMenuIdx());
+  html += `<div class="steps-card">
+    <h3>👟 Când faci cei 10.000 de pași</h3>
+    <p class="steps-sub">Nu sunt o plimbare de o oră și jumătate. Sunt <b>3 plimbări de 15 minute</b>,
+       puse în jurul meselor, plus ce faci oricum. Așa arată ziua:</p>`;
+  STEP_PLAN.forEach(s => {
+    html += `<div class="step-row">
+      <div class="step-when"><span class="step-time">${s.time}</span><span class="step-dur">${s.dur}</span></div>
+      <div class="step-body">
+        <div class="step-label">${s.label} <span class="step-count">${s.steps}</span></div>
+        <div class="step-why">${s.why}</div>
+      </div>
+    </div>`;
+  });
+  html += `<div class="steps-total">3 × 15 min după mese = <b>45 de minute de mers pe zi.</b> Restul se adună singur.</div>
+    ${restDay ? `<div class="steps-warn">⚠️ <b>Azi e zi liberă</b> — nu ai antrenament, deci îți lipsesc cei ~1.500 de pași din finisher-ul de la sală. Adaugă-i la plimbarea de după masa 1: fă-o de <b>30-40 de minute</b> în loc de 15. Weekendul e momentul în care pașii scad cel mai mult fără să observi.</div>` : ''}
+  </div></div>`;
+
+  view.innerHTML = html;
+}
+
+function toggleHabit(id, btn) {
+  const log = getHabitLog();
+  const today = dayOffsetKey(0);
+  if (!log[id]) log[id] = {};
+  const wasDone = !!log[id][today];
+
+  if (wasDone) delete log[id][today];
+  else log[id][today] = true;
+  saveHabitLog(log);
+
+  if (wasDone) {
+    renderHabits();
+    return;
+  }
+
+  // Bifat: pornim animația pe nodul curent, apoi re-randăm ca să se
+  // actualizeze seria și punctele — după ce animația s-a terminat.
+  btn.classList.add('done', 'pop');
+  btn.closest('.habit-card').classList.add('done');
+  burstParticles(btn);
+  if (navigator.vibrate) navigator.vibrate(25);
+  playTick();
+  setTimeout(renderHabits, 650);
+}
+
+function burstParticles(btn) {
+  const colors = ['#4caf72', '#81c784', '#4fc3f7', '#ffb74d'];
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('span');
+    p.className = 'habit-particle';
+    const angle = (Math.PI * 2 * i) / 10 + Math.random() * 0.4;
+    const dist = 26 + Math.random() * 20;
+    p.style.setProperty('--dx', `${Math.cos(angle) * dist}px`);
+    p.style.setProperty('--dy', `${Math.sin(angle) * dist}px`);
+    p.style.background = colors[i % colors.length];
+    p.style.left = '50%';
+    p.style.top = '50%';
+    btn.appendChild(p);
+    setTimeout(() => p.remove(), 620);
+  }
+}
+
+function playTick() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'sine';
+    o.frequency.setValueAtTime(660, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.09);
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.18, ctx.currentTime + 0.01);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.22);
+    o.start(); o.stop(ctx.currentTime + 0.25);
+  } catch (e) {}
+}
+
+function renameHabit(id) {
+  const h = HABITS.find(x => x.id === id);
+  const next = prompt('Redenumește obiceiul:', habitName(h));
+  if (next === null) return;
+  const names = getHabitNames();
+  const trimmed = next.trim();
+  if (!trimmed || trimmed === h.name) delete names[id];
+  else names[id] = trimmed;
+  localStorage.setItem(HABIT_NAMES_KEY, JSON.stringify(names));
+  renderHabits();
+}
+
+/* ============================================================
+   VIEW ALERGARE
+   ============================================================ */
+const RUN_DAYS = { 2: ["Marți", "Duminică"], 3: ["Marți", "Joi", "Duminică"] };
+
+function getRunProgress() { return JSON.parse(localStorage.getItem(RUN_KEY) || '{}'); }
+function saveRunProgress(p) { localStorage.setItem(RUN_KEY, JSON.stringify(p)); }
+
+let activeRunWeek = null; // null = urmează automat calendarul
+
+function currentRunWeekIdx() {
+  if (activeRunWeek !== null) return activeRunWeek;
+  const n = currentWeekNumber();
+  return Math.min(Math.max(n, 1), RUN_WEEKS.length) - 1;
+}
+
+function toggleRunSession(key, btn) {
+  const p = getRunProgress();
+  if (p[key]) { delete p[key]; } else { p[key] = true; }
+  saveRunProgress(p);
+  if (!p[key]) { renderRun(); return; }
+  btn.classList.add('done', 'pop');
+  if (navigator.vibrate) navigator.vibrate(25);
+  playTick();
+  setTimeout(renderRun, 650);
+}
+
+function renderRun() {
+  const view = document.getElementById('runView');
+  const wi = currentRunWeekIdx();
+  const w = RUN_WEEKS[wi];
+  const ph = RUN_PHASES[w.phase];
+  const prog = getRunProgress();
+  const weekNo = wi + 1;
+  const startD = dayDate(wi, 0), endD = dayDate(wi, 6);
+  const onSchedule = currentWeekNumber() === weekNo;
+
+  // Progres global: câte sesiuni de alergare au fost bifate din total
+  const totalSessions = RUN_WEEKS.reduce((a, x) => a + x.sessions, 0);
+  const doneSessions = Object.keys(prog).length;
+
+  let html = `<div class="run-wrap">
+    <div class="run-head">
+      <h2>🏃 Obiectiv: 5 km continuu</h2>
+      <div class="run-sub">Plan de 52 de săptămâni · țintă ${fmtDMY(dayDate(51, 6))}</div>
+      <div class="run-global">
+        <div class="run-global-bar"><div class="run-global-fill" style="width:${totalSessions ? (doneSessions / totalSessions * 100) : 0}%"></div></div>
+        <div class="run-global-text">${doneSessions} / ${totalSessions} sesiuni de alergare completate</div>
+      </div>
+    </div>`;
+
+  // ---- Navigare săptămâni ----
+  html += `<div class="run-nav">
+    <button class="run-nav-btn" onclick="stepRunWeek(-1)" ${wi === 0 ? 'disabled' : ''}>&#8592;</button>
+    <div class="run-nav-label">
+      <div class="run-nav-week">Săptămâna ${weekNo} din 52${w.deload ? ' · Deload' : ''}</div>
+      <div class="run-nav-dates">📅 ${fmtDMY(startD)} – ${fmtDMY(endD)}${onSchedule ? ' <span class="pb-now">curentă</span>' : ''}</div>
+    </div>
+    <button class="run-nav-btn" onclick="stepRunWeek(1)" ${wi === RUN_WEEKS.length - 1 ? 'disabled' : ''}>&#8594;</button>
+  </div>`;
+  // Doar dacă utilizatorul a navigat manual în altă săptămână decât cea automată.
+  if (activeRunWeek !== null) {
+    html += `<button class="run-jump" onclick="jumpRunToday()">↺ Sari la săptămâna curentă</button>`;
+  }
+
+  // ---- Faza ----
+  html += `<div class="run-phase" style="border-left-color:${ph.color}">
+    <div class="run-phase-label" style="color:${ph.color}">${ph.label} · ${ph.weeks}</div>
+    <p class="run-phase-why">${typeof ph.why === 'function' ? ph.why() : ph.why}</p>
+    <div class="run-phase-days">🗓️ ${ph.days}</div>
+  </div>`;
+
+  // ---- Sesiunile săptămânii ----
+  if (w.sessions === 0) {
+    const p0 = runPace(wi);
+    html += `<div class="run-nosession">
+      <div class="run-nosession-icon">🚫👟</div>
+      <h3>Fără alergare săptămâna asta — și e intenționat</h3>
+      <p>${w.detail}</p>
+      <div class="tread-grid" style="margin-top:14px">
+        <div class="tread-cell"><span class="tread-lab">Viteză mers</span><span class="tread-val run">${p0.walk}</span></div>
+        <div class="tread-cell"><span class="tread-lab">Pantă</span><span class="tread-val">${p0.incline}</span></div>
+        <div class="tread-cell"><span class="tread-lab">Durată</span><span class="tread-val">8-15 min</span></div>
+      </div>
+      <p class="run-nosession-why" style="margin-top:10px">💡 ${p0.tip} Durata exactă pe fiecare zi e în finisher-ul din tab-ul Antrenament.</p>
+      <p class="run-nosession-why">Alergarea începe în săptămâna 13. Până atunci construiești exact ce îți trebuie ca să alergi fără să te accidentezi: mai puțină greutate pe articulații și fesieri, ischiogambieri și gambe mai puternice.</p>
+    </div>`;
+  } else {
+    const dayNames = RUN_DAYS[w.sessions] || RUN_DAYS[3];
+    const pace = runPace(wi);
+    const mins = RUN_MINS[wi];
+
+    // ---- Setările de bandă ----
+    html += `<div class="tread-card">
+      <h3>🎛 Setări bandă</h3>
+      <div class="tread-grid">
+        <div class="tread-cell"><span class="tread-lab">Viteză alergare</span><span class="tread-val run">${pace.run}</span></div>
+        <div class="tread-cell"><span class="tread-lab">Viteză mers</span><span class="tread-val">${pace.walk}</span></div>
+        <div class="tread-cell"><span class="tread-lab">Pantă</span><span class="tread-val">${pace.incline}</span></div>
+        <div class="tread-cell"><span class="tread-lab">Durată protocol</span><span class="tread-val">${mins} min</span></div>
+      </div>
+      <div class="tread-total">+ 5 min mers de încălzire la 5 km/h &nbsp;·&nbsp; + 5 min mers de răcire &nbsp;=&nbsp; <b>${mins + 10} min pe bandă</b></div>
+      <div class="tread-tip">💡 ${pace.tip}</div>
+    </div>`;
+
+    html += `<div class="run-sessions"><h3>Sesiunile săptămânii</h3>`;
+    for (let s = 0; s < w.sessions; s++) {
+      const key = `r${wi}s${s}`;
+      const done = prog[key] ? ' done' : '';
+      html += `<div class="run-session${done}">
+        <div class="run-session-day">${dayNames[s]}</div>
+        <div class="run-session-body">
+          <div class="run-session-main">${w.main}</div>
+          ${w.detail ? `<div class="run-session-detail">${w.detail}</div>` : ''}
+        </div>
+        <button class="run-check${done}" onclick="toggleRunSession('${key}', this)" aria-pressed="${!!prog[key]}">
+          <svg viewBox="0 0 24 24"><path d="M4 12.5 L9.5 18 L20 6.5"/></svg>
+        </button>
+      </div>`;
+    }
+    html += `<div class="run-warmup">Înainte: 5 min mers + cercuri de șold și pendulări din încălzirea de la sală. După: rutina de coloană &amp; sciatic.</div>`;
+    html += `</div>`;
+  }
+
+  // ---- Criterii de trecere ----
+  html += `<div class="run-gate">
+    <h3>✅ Ca să treci la faza următoare</h3>
+    <p class="run-gate-sub">Nu treci mai departe pe bază de calendar, ci doar dacă bifezi tot ce urmează. Dacă nu le îndeplinești, mai stai o săptămână-două în faza curentă — nu e o întârziere, e felul în care eviți accidentarea.</p>
+    <ul>${ph.gate.map(g => `<li>${typeof g === 'function' ? g() : g}</li>`).join('')}</ul>
+  </div>`;
+
+  // ---- Regulile ----
+  html += `<div class="run-rules"><h3>Reguli care nu se negociază</h3>`;
+  RUN_RULES.forEach(r => {
+    html += `<div class="run-rule">
+      <div class="run-rule-icon">${r.icon}</div>
+      <div><div class="run-rule-title">${r.title}</div><div class="run-rule-text">${r.text}</div></div>
+    </div>`;
+  });
+  html += `</div>`;
+
+  // ---- Harta celor 52 de săptămâni ----
+  html += `<div class="run-map"><h3>Planul complet — 52 de săptămâni</h3><div class="run-map-grid">`;
+  RUN_WEEKS.forEach((rw, i) => {
+    const c = RUN_PHASES[rw.phase].color;
+    const cls = i === wi ? ' current' : '';
+    const doneAll = rw.sessions > 0 && Array.from({ length: rw.sessions }, (_, s) => prog[`r${i}s${s}`]).every(Boolean);
+    html += `<div class="run-map-cell${cls}${doneAll ? ' done' : ''}" style="border-color:${c}"
+                  title="S${i + 1} — ${rw.main}" onclick="goRunWeek(${i})">${i + 1}</div>`;
+  });
+  html += `</div>
+    <div class="run-legend">
+      ${RUN_PHASES.map(p => `<span class="run-legend-item"><i style="background:${p.color}"></i>${p.label.split(' — ')[0]}</span>`).join('')}
+    </div>
+  </div>`;
+
+  html += `</div>`;
+  view.innerHTML = html;
+}
+
+function stepRunWeek(delta) {
+  activeRunWeek = Math.min(Math.max(currentRunWeekIdx() + delta, 0), RUN_WEEKS.length - 1);
+  renderRun();
+}
+function goRunWeek(i) { activeRunWeek = i; renderRun(); }
+function jumpRunToday() { activeRunWeek = null; renderRun(); }
+
+/* ============================================================
+   VIEW MENIU — 2 mese pe zi
+   ============================================================ */
+const FOOD_KEY = 'gymFoodLog'; // { 'YYYY-MM-DD': { m0:true, m1:true, sup:true } }
+
+function getFoodLog() { return JSON.parse(localStorage.getItem(FOOD_KEY) || '{}'); }
+function saveFoodLog(l) { localStorage.setItem(FOOD_KEY, JSON.stringify(l)); }
+
+let activeFoodDay = null; // null = ziua de azi
+
+function todayMenuIdx() { return (new Date().getDay() + 6) % 7; } // 0 = luni
+function currentFoodIdx() { return activeFoodDay === null ? todayMenuIdx() : activeFoodDay; }
+
+function toggleMeal(slot, btn) {
+  const idx = currentFoodIdx();
+  if (idx !== todayMenuIdx()) { alert('Poți bifa mesele doar pentru ziua de azi.'); return; }
+  const log = getFoodLog();
+  const k = dayOffsetKey(0);
+  if (!log[k]) log[k] = {};
+  const was = !!log[k][slot];
+  if (was) delete log[k][slot]; else log[k][slot] = true;
+  saveFoodLog(log);
+  if (was) { renderFood(); return; }
+  btn.classList.add('done', 'pop');
+  if (navigator.vibrate) navigator.vibrate(25);
+  playTick();
+  setTimeout(renderFood, 650);
+}
+
+function renderFood() {
+  const view = document.getElementById('foodView');
+  const idx = currentFoodIdx();
+  const d = MENU[idx];
+  const isToday = idx === todayMenuIdx();
+  const log = getFoodLog()[dayOffsetKey(0)] || {};
+  const t = calcTargets();
+
+  let html = `<div class="food-wrap">
+    <div class="food-head">
+      <h2>🍽 Meniul zilei</h2>
+      <div class="food-sub">3 mese pe zi · ${t.height} cm / ${fmtKg(t.weight)} kg · fără suplimente</div>
+    </div>`;
+
+  // Selector de zi
+  html += `<div class="food-days">`;
+  MENU.forEach((m, i) => {
+    html += `<button class="food-day${i === idx ? ' active' : ''}${i === todayMenuIdx() ? ' today' : ''}"
+              onclick="goFoodDay(${i})">${m.day.slice(0, 3)}</button>`;
+  });
+  html += `</div>`;
+
+  // Sumar macro
+  html += `<div class="food-summary">
+    <div class="food-day-title">${d.day}${isToday ? ' <span class="pb-now">azi</span>' : ''} · ${d.training ? '🏋 zi de antrenament' : '🛋 zi liberă'}</div>
+    <div class="food-macros">
+      <span class="fm kcal"><b>${d.kcal}</b> kcal</span>
+      <span class="fm p"><b>${d.p}</b> g proteină</span>
+      <span class="fm c"><b>${d.c}</b> g carbo</span>
+      <span class="fm f"><b>${d.f}</b> g grăsimi</span>
+    </div>
+  </div>`;
+
+  // Mesele
+  d.meals.forEach((meal, mi) => {
+    const slot = `m${mi}`;
+    const done = isToday && log[slot] ? ' done' : '';
+    html += `<div class="meal-card${done}">
+      <div class="meal-head">
+        <div>
+          <span class="meal-time">${meal.time}</span>
+          <span class="meal-name">${meal.name}</span>
+        </div>
+        <div class="meal-right">
+          <span class="meal-kcal">${meal.kcal} kcal · ${meal.macro}</span>
+          ${isToday ? `<button class="meal-check${done}" onclick="toggleMeal('${slot}', this)" aria-pressed="${!!log[slot]}">
+            <svg viewBox="0 0 24 24"><path d="M4 12.5 L9.5 18 L20 6.5"/></svg>
+          </button>` : ''}
+        </div>
+      </div>
+      <ul class="meal-items">${meal.items.map(i => `<li>${i}</li>`).join('')}</ul>
+      <div class="meal-micro">🧬 ${meal.micro}</div>
+    </div>`;
+  });
+
+  // Acoperirea micronutrienților din alimente (fără suplimente)
+  html += `<div class="micro-card">
+    <h3>🧬 Vitamine și minerale — doar din mâncare</h3>
+    <p class="micro-sub">Ai spus fără suplimente, deci fiecare micronutrient trebuie să vină din farfurie. Uite de unde vine fiecare:</p>
+    <div class="micro-list">`;
+  MICRO_COVER.forEach(m => {
+    html += `<div class="micro-item${m.ok ? '' : ' gap'}">
+      <span class="micro-dot">${m.ok ? '✓' : '!'}</span>
+      <div><span class="micro-n">${m.n}</span><span class="micro-src">${m.src}</span></div>
+    </div>`;
+  });
+  html += `</div>
+    <div class="micro-warn">
+      <b>⚠️ Vitamina D e singura pe care alimentația nu o acoperă complet.</b>
+      Peștele gras de 4 ori pe săptămână îți dă ~400-600 UI pe zi, față de cele 800-1.000 UI
+      recomandate la vârsta ta. Diferența vine în mod normal din soare: <b>15-20 de minute
+      cu brațele și picioarele descoperite, între 11:00 și 15:00, din aprilie până în
+      septembrie</b> — atât acoperă necesarul. Din octombrie până în martie, la latitudinea
+      României, pielea practic nu mai sintetizează vitamina D indiferent cât stai afară.
+      Nu îți recomand o pastilă dacă nu vrei, dar îți recomand un lucru:
+      <b>fă-ți o analiză de sânge 25-OH vitamina D</b>. Dacă iese peste 30 ng/ml, nu ai
+      nicio problemă și continuăm așa. Dacă iese sub 20, discutăm — vitamina D scăzută
+      înseamnă forță mai mică, oase mai fragile și recuperare mai lentă, exact opusul a
+      ce urmărim.
+    </div>
+  </div>`;
+
+  // Reguli
+  html += `<div class="food-rules">
+    <h3>Reguli</h3>
+    <div class="food-rule"><b>3 mese: 08:30, 13:00, 17:30.</b> Cu 50-65 g de proteină per masă ești exact în zona în care sinteza proteică se activează complet de trei ori pe zi.</div>
+    <div class="food-rule"><b>Masa 1 e cea mai mare, nu cina.</b> Te antrenezi la 07:00, deci la 08:30 mușchiul tocmai a golit rezervele — acolo pui carbohidrații. Cina de la 17:30 e cea mai ușoară: proteină, legume, puțini carbohidrați.</div>
+    <div class="food-rule"><b>Te antrenezi pe stomacul gol, iar asta e în regulă</b> pentru o oră de forță — cu condiția să mănânci în maximum 60 de minute după. Dacă în primele săptămâni te simți slăbit la ultimele exerciții, mănâncă o banană la 06:45 și scade-o din masa 1.</div>
+    <div class="food-rule"><b>Cina la 17:30 înseamnă 5 ore până la somn.</b> Digestia e complet terminată când te culci — dormi mai bine, iar dimineața te trezești cu adevărat flămând, ceea ce face masa 1 ușor de mâncat.</div>
+    <div class="food-rule"><b>Cântărește crud</b> unde scrie „crud" (carne, orez, paste, quinoa) și <b>fiert</b> unde scrie „fiert" (cartofi, linte, năut). Orezul își triplează greutatea la fiert — cea mai frecventă sursă de calorii ascunse.</div>
+    <div class="food-rule"><b>Legumele sunt minimul, nu maximul.</b> Poți dubla orice legumă verde fără să recalculezi nimic.</div>
+    <div class="food-rule"><b>Apă: 3-3,5 L pe zi.</b> Aportul mare de proteină crește nevoia de apă, iar discurile intervertebrale sunt ~80% apă — hidratarea contează direct pentru sciatic.</div>
+    <div class="food-rule"><b>Zilele libere au ${t.kcalRest} kcal, nu ${t.kcalTrain}.</b> Nu antrenezi, deci nu ai nevoie de combustibil. Diferența vine aproape toată din carbohidrați — proteina rămâne la 170 g în fiecare zi.</div>
+  </div>`;
+
+  html += `</div>`;
+  view.innerHTML = html;
+}
+
+function goFoodDay(i) { activeFoodDay = (i === todayMenuIdx()) ? null : i; renderFood(); }
+
+/* -------------- VIEW SWITCH -------------- */
+const viewTrainingBtn = document.getElementById('viewTrainingBtn');
+const viewHabitsBtn = document.getElementById('viewHabitsBtn');
+const viewRunBtn = document.getElementById('viewRunBtn');
+const viewFoodBtn = document.getElementById('viewFoodBtn');
+
+function showView(v) {
+  const view = ['training', 'run', 'food', 'habits'].includes(v) ? v : 'training';
+  document.getElementById('trainingView').style.display = view === 'training' ? '' : 'none';
+  document.getElementById('runView').style.display = view === 'run' ? '' : 'none';
+  document.getElementById('foodView').style.display = view === 'food' ? '' : 'none';
+  document.getElementById('habitsView').style.display = view === 'habits' ? '' : 'none';
+  document.querySelector('footer').style.display = view === 'training' ? '' : 'none';
+  viewTrainingBtn.classList.toggle('active', view === 'training');
+  viewRunBtn.classList.toggle('active', view === 'run');
+  viewFoodBtn.classList.toggle('active', view === 'food');
+  viewHabitsBtn.classList.toggle('active', view === 'habits');
+  localStorage.setItem('activeView', view);
+  if (view === 'training') measureSticky();
+  else if (view === 'run') renderRun();
+  else if (view === 'food') renderFood();
+  else renderHabits();
+}
+viewTrainingBtn.onclick = () => showView('training');
+viewRunBtn.onclick = () => showView('run');
+viewFoodBtn.onclick = () => showView('food');
+viewHabitsBtn.onclick = () => showView('habits');
+
+/* -------------- BARA DE DATĂ -------------- */
+function renderDateBar() {
+  const now = new Date();
+  const weekday = now.toLocaleDateString('ro-RO', { weekday: 'long' });
+  document.getElementById('dateToday').textContent = `${weekday}, ${fmtDMY(now)}`;
+  const dayNo = programDayNumber();
+  const wkNo = currentWeekNumber();
+  const el = document.getElementById('dateDayNo');
+  if (dayNo >= 1) {
+    el.textContent = `Ziua ${dayNo} · Săptămâna ${wkNo}`;
+  } else {
+    const days = 1 - dayNo;
+    el.textContent = `Start ${fmtDMY(getProgramStart())} (în ${days} ${days === 1 ? 'zi' : 'zile'})`;
+  }
+}
+
+/* -------------- SETĂRI -------------- */
+const settingsOverlay = document.getElementById('settingsOverlay');
+
+function parseDMY(s) {
+  const m = String(s).trim().match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/);
+  if (!m) return null;
+  const d = atMidnight(new Date(+m[3], +m[2] - 1, +m[1]));
+  if (isNaN(d) || d.getDate() !== +m[1] || d.getMonth() !== +m[2] - 1) return null;
+  return d;
+}
+
+function openSettings() {
+  const c = getCfg();
+  document.getElementById('cfgName').value = c.name || '';
+  document.getElementById('cfgAge').value = c.age;
+  document.getElementById('cfgSex').value = c.sex;
+  document.getElementById('cfgHeight').value = c.height;
+  document.getElementById('cfgWeight').value = c.weight;
+  document.getElementById('cfgTarget').value = c.target;
+  document.getElementById('cfgStart').value = fmtDMY(getProgramStart());
+  renderSettingsCalc();
+  settingsOverlay.classList.add('active');
+}
+
+// Recalculează live pe măsură ce schimbi câmpurile, ca să vezi efectul.
+function readForm() {
+  return {
+    name: document.getElementById('cfgName').value.trim(),
+    age: +document.getElementById('cfgAge').value || CFG_DEFAULTS.age,
+    sex: document.getElementById('cfgSex').value,
+    height: +document.getElementById('cfgHeight').value || CFG_DEFAULTS.height,
+    weight: +document.getElementById('cfgWeight').value || CFG_DEFAULTS.weight,
+    target: +document.getElementById('cfgTarget').value || CFG_DEFAULTS.target,
+  };
+}
+
+function renderSettingsCalc() {
+  const saved = localStorage.getItem(CFG_KEY);
+  localStorage.setItem(CFG_KEY, JSON.stringify(readForm())); // temporar, doar pentru calcul
+  const t = calcTargets();
+  if (saved === null) localStorage.removeItem(CFG_KEY); else localStorage.setItem(CFG_KEY, saved);
+
+  document.getElementById('settingsCalc').innerHTML = `
+    <div class="sc-title">Se calculează automat din datele de mai sus</div>
+    <div class="sc-grid">
+      <div class="sc-cell"><span>Metabolism bazal</span><b>${t.bmr} kcal</b></div>
+      <div class="sc-cell"><span>Consum zi antrenament</span><b>${t.tdeeTrain} kcal</b></div>
+      <div class="sc-cell"><span>Consum zi liberă</span><b>${t.tdeeRest} kcal</b></div>
+      <div class="sc-cell hi"><span>Ținta zi antrenament</span><b>${t.kcalTrain} kcal</b></div>
+      <div class="sc-cell hi"><span>Ținta zi liberă</span><b>${t.kcalRest} kcal</b></div>
+      <div class="sc-cell hi"><span>Proteină zilnic</span><b>${t.protein} g</b></div>
+    </div>
+    ${t.toLose > 0 ? `<div class="sc-eta">
+      Deficit mediu <b>${t.avgDeficit} kcal/zi</b> → <b>${t.kgPerWeek.toFixed(2)} kg/săptămână</b>.
+      Cele ${t.toLose.toFixed(1)} kg până la ținta de ${t.target} kg îți iau ~<b>${t.weeks} săptămâni</b>${t.eta ? `, adică până pe <b>${fmtDMY(t.eta)}</b>` : ''}.
+    </div>` : `<div class="sc-eta">Ești deja la greutatea țintă — caloriile de mai sus sunt pentru menținere, nu pentru slăbit.</div>`}`;
+}
+
+['cfgAge','cfgSex','cfgHeight','cfgWeight','cfgTarget'].forEach(id => {
+  document.getElementById(id).addEventListener('input', renderSettingsCalc);
+});
+
+document.getElementById('settingsBtn').onclick = openSettings;
+document.getElementById('settingsCancel').onclick = () => settingsOverlay.classList.remove('active');
+
+document.getElementById('settingsSave').onclick = () => {
+  const startD = parseDMY(document.getElementById('cfgStart').value);
+  if (!startD) { alert('Data de start e invalidă. Folosește zi/lună/an, de exemplu 10/08/2026.'); return; }
+  const c = readForm();
+  if (c.target > c.weight) { alert('Greutatea țintă e mai mare decât cea actuală. Verifică valorile.'); return; }
+  saveCfg(c);
+  setProgramStart(startD);
+  settingsOverlay.classList.remove('active');
+  refreshAll();
+};
+
+document.getElementById('settingsWipe').onclick = () => {
+  if (!confirm('Șterge tot: datele tale, greutățile salvate, progresul de la sală, alergare, mese și obiceiuri. Nu se poate anula. Continui?')) return;
+  localStorage.clear();
+  location.reload();
+};
+
+// Un singur loc care re-randează tot ce depinde de configurare.
+function refreshAll() {
+  renderDateBar();
+  applyConfigToUI();
+  buildWeekPills();
+  render();
+  const v = localStorage.getItem('activeView');
+  if (v === 'run') renderRun();
+  else if (v === 'food') renderFood();
+  else if (v === 'habits') renderHabits();
+}
+
+// Textele care conțineau date personale sunt acum generate din configurare.
+function applyConfigToUI() {
+  const t = calcTargets();
+  const who = t.name ? `${t.name} · ` : '';
+  document.getElementById('headerSub').innerHTML =
+    `${who}${fmtKg(t.weight)} &rarr; ${fmtKg(t.target)} kg &bull; 5 km alergare &bull; 5 Zile/Săptămână`;
+  document.title = t.name ? `${t.name} — Plan 12 săptămâni` : '12-Week Gym Plan';
+}
+
+/* Barele lipicioase depind de înălțimea reală a header-ului, care variază
+   cu lățimea ecranului — o măsurăm în loc să codăm pixeli ficși. */
+function measureSticky() {
+  const hdr = document.querySelector('header');
+  const wk = document.querySelector('.week-switch');
+  const root = document.documentElement.style;
+  // -1px: înălțimile reale sunt fracționare, iar o diferență de 0,5px lasă
+  // o fantă prin care se vede conținutul derulând pe sub barele lipicioase.
+  const h = el => (Math.floor(el.getBoundingClientRect().height) - 1) + 'px';
+  if (hdr) root.setProperty('--hdr-h', h(hdr));
+  if (wk) root.setProperty('--wk-h', h(wk));
+}
+window.addEventListener('resize', measureSticky);
+
+// Dacă pagina rămâne deschisă peste miezul nopții, „azi” s-a schimbat.
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) return;
+  renderDateBar();
+  const v = localStorage.getItem('activeView');
+  if (v === 'habits') renderHabits();
+  else if (v === 'run') renderRun();
+  else if (v === 'food') renderFood();
+});
+
+/* -------------- BOOTSTRAP -------------- */
+renderDateBar();
+applyConfigToUI();
+buildWeekPills();
 render();
-// Set initial week button state
-document.getElementById('week1Btn').classList.toggle('active', activeWeek === 0);
-document.getElementById('week2Btn').classList.toggle('active', activeWeek === 1);
+measureSticky();
+showView(localStorage.getItem('activeView'));
+
+// La prima deschidere, cere datele — altfel aplicația arată valori de exemplu.
+if (!isConfigured()) openSettings();
 </script>
 </body>
 </html>
