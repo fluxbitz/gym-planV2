@@ -381,6 +381,139 @@
   }
   .warmup-check.done { background: #ffb74d; border-color: #ffb74d; color: #1a1008; }
 
+  /* ===================== HARTĂ MUSCULARĂ ===================== */
+  /* Trei stări, în ordinea în care le parcurge o zi:
+     gri = netargetat · portocaliu pulsând = ales pentru azi · albastru = terminat. */
+  .mm-wrap { max-width: 760px; margin: 0 auto; padding: 12px 16px 48px; }
+
+  .mm-daybar {
+    display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid #2a2a4a; border-radius: 12px; padding: 12px 14px;
+  }
+  .mm-nav-btn {
+    width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+    border: 1px solid #2a2a4a; background: #0f0f1a; color: #4fc3f7;
+    font-size: 1rem; cursor: pointer; transition: all 0.2s;
+  }
+  .mm-nav-btn:hover { background: #4fc3f7; color: #0f0f1a; }
+  .mm-day-text { font-weight: 800; color: #fff; font-size: 0.95rem; text-align: center; min-width: 200px; }
+  .mm-day-sub { display: block; font-weight: 600; font-size: 0.72rem; color: #7a7a9a; margin-top: 3px; }
+  .mm-day-badge {
+    display: inline-block; background: #4fc3f7; color: #0f0f1a;
+    font-size: 0.6rem; font-weight: 800; padding: 2px 6px; border-radius: 4px;
+    margin-left: 6px; vertical-align: middle;
+  }
+  .mm-today-btn {
+    padding: 7px 14px; border-radius: 20px; cursor: pointer;
+    background: transparent; border: 1px solid #4fc3f7; color: #4fc3f7;
+    font-weight: 700; font-size: 0.75rem; transition: all 0.2s;
+  }
+  .mm-today-btn:hover { background: #4fc3f7; color: #0f0f1a; }
+
+  .mm-intro { text-align: center; color: #888; font-size: 0.82rem; margin: 16px 0 10px; line-height: 1.5; }
+  .mm-intro b { color: #ff9800; }
+
+  .mm-map {
+    background: radial-gradient(ellipse at center, #16213e 0%, #0f0f1a 70%);
+    border: 1px solid #2a2a4a; border-radius: 16px;
+    padding: 10px; margin-bottom: 12px;
+  }
+  .mm-map svg { width: 100%; height: auto; display: block; }
+
+  /* Silueta corpului — doar decor, nu se poate apăsa. */
+  .mm-body { fill: #23233c; stroke: #23233c; pointer-events: none; }
+  .mm-sep { stroke: #0f0f1a; stroke-width: 1.2; fill: none; pointer-events: none; opacity: 0.55; }
+  .mm-caption { fill: #5a5a7a; font-size: 11px; font-weight: 700; letter-spacing: 1px; pointer-events: none; }
+
+  /* Grupele musculare: o singură culoare pe grupă (--c), aplicată ca `fill`
+     la forme și ca `stroke` la „capsulele” de membre. Conturul închis la
+     culoare desparte grupele vecine, altfel coapsa ar arăta ca o pată. */
+  .mg { --c: #3d3d66; cursor: pointer; }
+  .mg:hover { --c: #53538c; }
+  .mg.sel { --c: #ff9800; animation: mgPulse 1.5s ease-in-out infinite; }
+  .mg.done { --c: #4fc3f7; animation: none; }
+  .mg path, .mg rect, .mg circle, .mg ellipse {
+    fill: var(--c); stroke: #14142a; stroke-width: 1.2; transition: fill 0.25s;
+  }
+  .mg line { stroke: var(--c); fill: none; transition: stroke 0.25s; }
+  .mg line.mm-halo { stroke: #14142a; }
+  @keyframes mgPulse {
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 3px rgba(255, 152, 0, 0.85)); }
+    50%      { opacity: 0.5; filter: drop-shadow(0 0 0 rgba(255, 152, 0, 0)); }
+  }
+  @media (prefers-reduced-motion: reduce) { .mg.sel { animation: none; } }
+
+  .mm-legend { display: flex; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .mm-legend span { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; color: #888; font-weight: 600; }
+  .mm-legend i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+
+  .mm-cat { margin-bottom: 14px; }
+  .mm-cat-title { font-size: 0.78rem; font-weight: 800; color: #7a7a9a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .mm-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .mm-chip {
+    padding: 8px 14px; border-radius: 20px; cursor: pointer;
+    background: #1a1a2e; border: 1px solid #2a2a4a; color: #aaa;
+    font-weight: 700; font-size: 0.8rem; transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 7px;
+  }
+  .mm-chip:hover { color: #fff; border-color: #ff9800; }
+  .mm-chip .mm-chip-n { font-size: 0.68rem; font-weight: 700; opacity: 0.65; }
+  .mm-chip.sel { background: #ff9800; border-color: #ff9800; color: #1a1008; }
+  .mm-chip.done { background: #4fc3f7; border-color: #4fc3f7; color: #0f0f1a; }
+
+  .mm-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 22px 0 8px; }
+  .mm-go-btn {
+    padding: 12px 24px; border-radius: 24px; cursor: pointer;
+    background: #ff9800; border: 1px solid #ff9800; color: #1a1008;
+    font-weight: 800; font-size: 0.9rem; transition: all 0.2s;
+  }
+  .mm-go-btn:hover { filter: brightness(1.1); }
+  .mm-go-btn:disabled { background: transparent; color: #555; border-color: #2a2a4a; cursor: default; filter: none; }
+  .mm-clear-btn {
+    padding: 12px 18px; border-radius: 24px; cursor: pointer;
+    background: transparent; border: 1px solid #e94560; color: #e94560;
+    font-weight: 700; font-size: 0.8rem; transition: all 0.2s;
+  }
+  .mm-clear-btn:hover { background: #e94560; color: #fff; }
+
+  /* Ținta butonului „Vezi exercițiile” — lăsăm loc cât ține header-ul lipicios. */
+  #mmSession { scroll-margin-top: calc(var(--hdr-h, 126px) + 14px); }
+
+  .mm-session-head {
+    text-align: center; margin: 26px 0 18px; padding: 16px; border-radius: 12px;
+    background: linear-gradient(135deg, #1a1a2e, #16213e); border: 1px solid #2a2a4a;
+  }
+  .mm-session-head h2 { color: #ff9800; font-size: 1.2rem; }
+  .mm-session-head .mm-sh-groups { color: #888; font-size: 0.8rem; margin-top: 5px; }
+  .mm-session-head .mm-sh-meta { color: #4fc3f7; font-size: 0.75rem; margin-top: 7px; font-weight: 600; }
+  .mm-session-head .mm-sh-rotate { color: #6a6a8a; font-size: 0.72rem; margin-top: 7px; font-style: italic; }
+  .mm-session-head.is-done { border-color: #4fc3f7; }
+  .mm-session-head.is-done h2 { color: #4fc3f7; }
+
+  .mm-group-label {
+    display: flex; align-items: center; gap: 8px; margin: 20px 0 10px;
+    font-size: 0.8rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #ff9800;
+  }
+  .mm-group-label.done { color: #4fc3f7; }
+  .mm-group-label::after { content: ''; flex: 1; height: 1px; background: #2a2a4a; }
+
+  .mm-empty { text-align: center; color: #666; font-size: 0.85rem; padding: 30px 10px; line-height: 1.6; }
+
+  .mm-history { margin-top: 34px; }
+  .mm-history h3 { font-size: 0.8rem; color: #7a7a9a; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .mm-hist-row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    background: #1a1a2e; border: 1px solid #2a2a4a; border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 8px; cursor: pointer; transition: border-color 0.2s;
+  }
+  .mm-hist-row:hover { border-color: #4fc3f7; }
+  .mm-hist-date { font-weight: 800; color: #fff; font-size: 0.82rem; min-width: 96px; }
+  .mm-hist-groups { flex: 1; color: #888; font-size: 0.75rem; min-width: 140px; }
+  .mm-hist-state { font-size: 0.72rem; font-weight: 800; padding: 3px 9px; border-radius: 10px; }
+  .mm-hist-state.done { background: rgba(79, 195, 247, 0.15); color: #4fc3f7; }
+  .mm-hist-state.open { background: rgba(255, 152, 0, 0.15); color: #ff9800; }
+
   .muscle-highlight { fill: #e94560; opacity: 0.85; }
   .muscle-outline { fill: none; stroke: #e94560; stroke-width: 1.5; opacity: 0.6; }
   .body-base { fill: #2a2a4a; }
@@ -459,7 +592,7 @@
   .settings-wipe:hover { color: #e94560; }
 
   /* ===================== VIEW NAV (Antrenament / Obiceiuri) ===================== */
-  .view-nav { display: flex; justify-content: center; gap: 8px; margin-top: 14px; }
+  .view-nav { display: flex; justify-content: center; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
   .view-btn {
     padding: 8px 20px; border-radius: 20px; cursor: pointer;
     background: rgba(255,255,255,0.04); border: 1px solid #2a2a4a;
@@ -1025,12 +1158,14 @@
   </div>
   <div class="view-nav">
     <button class="view-btn active" id="viewTrainingBtn">&#127947; Antrenament</button>
+    <button class="view-btn" id="viewMuscleBtn">&#129485; Mușchi</button>
     <button class="view-btn" id="viewRunBtn">&#127939; Alergare</button>
     <button class="view-btn" id="viewFoodBtn">&#127869; Meniu</button>
     <button class="view-btn" id="viewHabitsBtn">&#9989; Obiceiuri</button>
   </div>
 </header>
 
+<div id="muscleView" style="display:none"></div>
 <div id="runView" style="display:none"></div>
 <div id="foodView" style="display:none"></div>
 
@@ -1948,6 +2083,8 @@ function editBase(exId, current) {
   else w[`base_${exId}`] = v;
   saveWeights(w);
   render();
+  // Butonul ✎ apare și în harta musculară — acolo recomandarea trebuie recalculată.
+  if (localStorage.getItem('activeView') === 'muscle') renderMuscle();
 }
 
 function getWeights() {
@@ -2838,30 +2975,501 @@ function renderFood() {
 
 function goFoodDay(i) { activeFoodDay = (i === todayMenuIdx()) ? null : i; renderFood(); }
 
+/* ============================================================
+   HARTĂ MUSCULARĂ — alegi grupele, primești exercițiile zilei
+
+   Ecran separat: nu atinge planul de 12 săptămâni, doar împrumută
+   din aceeași bibliotecă de exerciții (EX) și aceiași parametri de
+   fază (PHASES + WEEK_SCHEME). Selecția se salvează pe DATA la care
+   e făcută, iar exercițiile se rotesc de la o săptămână la alta, ca
+   aceleași grupe să nu însemne mereu aceleași aparate.
+   ============================================================ */
+
+/* `prio` = ordinea în sesiune (compus mare → izolare mică), nu ordinea
+   de afișare a pastilelor, care e pe categorii ca în lista din meniu. */
+const MUSCLE_GROUPS = [
+  { id:'biceps',    cat:'Brațe',    name:'Bicepși',           prio:11, ex:['bicepsCurl','hammerCurl'] },
+  { id:'triceps',   cat:'Brațe',    name:'Tricepși',          prio:12, ex:['seatedDip','pushdown','overheadExt'] },
+  { id:'forearms',  cat:'Brațe',    name:'Antebrațe',         prio:13, ex:['wristCurl','hammerCurl'] },
+  { id:'shoulders', cat:'Umeri',    name:'Deltoizi (Umeri)',  prio:4,  ex:['shoulderPress','lateralRaise','revFly','frontRaise'] },
+  { id:'chest',     cat:'Piept',    name:'Pectorali',         prio:1,  ex:['chestPress','inclinePress','pecFly','crossover'] },
+  { id:'upperBack', cat:'Spate',    name:'Spatele superior',  prio:3,  ex:['midRow','shrugs','revFly'] },
+  { id:'lats',      cat:'Spate',    name:'Dorsali (Lats)',    prio:2,  ex:['latPulldown','lowRow','straightArm'] },
+  { id:'lowerBack', cat:'Spate',    name:'Spatele inferior',  prio:14, ex:['lowBack','pullThrough'] },
+  { id:'abs',       cat:'Core',     name:'Abdomen (Abs)',     prio:15, ex:['cableCrunch','abCrunch','pallof','rotaryTorso'] },
+  { id:'quads',     cat:'Picioare', name:'Cvadricepși',       prio:5,  ex:['legPress','legExt'] },
+  { id:'hamstrings',cat:'Picioare', name:'Femurali',          prio:6,  ex:['seatedLegCurl','proneLegCurl'] },
+  { id:'glutes',    cat:'Picioare', name:'Fesieri',           prio:7,  ex:['gluteMaster','pullThrough'] },
+  { id:'calves',    cat:'Picioare', name:'Gambe',             prio:10, ex:['calfStanding','calfSoleus'] },
+  { id:'abductors', cat:'Picioare', name:'Abductori',         prio:8,  ex:['outerThigh'] },
+  { id:'adductors', cat:'Picioare', name:'Adductori',         prio:9,  ex:['innerThigh'] },
+];
+const GROUP_BY_ID = Object.fromEntries(MUSCLE_GROUPS.map(g => [g.id, g]));
+const MUSCLE_CATS = [
+  { name:'Brațe',    icon:'💪' },
+  { name:'Umeri',    icon:'肩' },
+  { name:'Piept',    icon:'🔘' },
+  { name:'Spate',    icon:'🪵' },
+  { name:'Core',     icon:'🧱' },
+  { name:'Picioare', icon:'🦵' },
+];
+
+/* ---- Harta: două siluete (față / spate) în același SVG ----
+   Membrele sunt linii groase cu capete rotunde — o „capsulă” desenată
+   dintr-un singur element, de asta grupele colorează și `stroke`, nu doar
+   `fill`. Jumătatea dreaptă e oglindirea celei stângi (translate+scale).  */
+function mmFigure(side) {
+  const mir = s => `<g transform="translate(200,0) scale(-1,1)">${s}</g>`;
+  const both = s => s + mir(s);
+  const R = (g, inner) => `<g class="mg" data-g="${g}"><title>${GROUP_BY_ID[g].name}</title>${inner}</g>`;
+  // Capsulă (mușchi de membru) + „halo” închis la culoare sub ea, ca grupele
+  // lipite — cvadriceps / adductor / abductor — să nu curgă una în alta.
+  const cap = (x1, y1, x2, y2, w) =>
+    `<line class="mm-halo" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke-width="${w + 4}" stroke-linecap="round"/>` +
+    `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke-width="${w}" stroke-linecap="round"/>`;
+
+  const body = `<g class="mm-body">
+    <ellipse cx="100" cy="30" rx="18" ry="23"/>
+    <line x1="100" y1="46" x2="100" y2="70" stroke-width="24" stroke-linecap="round"/>
+    <path d="M 62 78 Q 60 70 72 67 L 128 67 Q 140 70 138 78 L 133 148 Q 131 172 133 196 Q 135 214 131 230 L 69 230 Q 65 214 67 196 Q 69 172 67 148 Z"/>
+    <circle cx="61" cy="86" r="17"/><circle cx="139" cy="86" r="17"/>
+    <line x1="53" y1="96" x2="45" y2="162" stroke-width="23" stroke-linecap="round"/>
+    <line x1="147" y1="96" x2="155" y2="162" stroke-width="23" stroke-linecap="round"/>
+    <line x1="44" y1="170" x2="36" y2="232" stroke-width="19" stroke-linecap="round"/>
+    <line x1="156" y1="170" x2="164" y2="232" stroke-width="19" stroke-linecap="round"/>
+    <ellipse cx="34" cy="247" rx="9" ry="13"/><ellipse cx="166" cy="247" rx="9" ry="13"/>
+    <line x1="83" y1="238" x2="78" y2="318" stroke-width="34" stroke-linecap="round"/>
+    <line x1="117" y1="238" x2="122" y2="318" stroke-width="34" stroke-linecap="round"/>
+    <line x1="78" y1="330" x2="82" y2="402" stroke-width="26" stroke-linecap="round"/>
+    <line x1="122" y1="330" x2="118" y2="402" stroke-width="26" stroke-linecap="round"/>
+    <ellipse cx="82" cy="412" rx="13" ry="9"/><ellipse cx="118" cy="412" rx="13" ry="9"/>
+  </g>`;
+
+  const front =
+    R('chest',     both(`<path d="M 76 84 Q 90 79 97 94 L 97 118 Q 83 122 77 113 Q 72 100 76 84 Z"/>`)) +
+    R('shoulders', both(`<circle cx="60" cy="86" r="14"/>`)) +
+    R('biceps',    both(cap(55, 104, 48, 150, 16))) +
+    R('forearms',  both(cap(45, 178, 38, 226, 13))) +
+    R('abs',       `<rect x="86" y="124" width="28" height="68" rx="9"/>`) +
+    `<g class="mm-sep"><line x1="100" y1="128" x2="100" y2="188"/><line x1="88" y1="144" x2="112" y2="144"/><line x1="88" y1="160" x2="112" y2="160"/><line x1="88" y1="176" x2="112" y2="176"/></g>` +
+    R('quads',     both(cap(83, 248, 79, 310, 26))) +
+    R('abductors', both(cap(71, 244, 69, 284, 10))) +
+    R('adductors', both(cap(95, 252, 93, 298, 11))) +
+    R('calves',    both(cap(75, 346, 78, 390, 12)));
+
+  const back =
+    R('upperBack', `<path d="M 76 70 Q 100 60 124 70 L 133 100 Q 100 88 67 100 Z"/><path d="M 78 104 Q 100 96 122 104 L 120 130 Q 100 122 80 130 Z"/>`) +
+    R('shoulders', both(`<circle cx="60" cy="86" r="14"/>`)) +
+    R('lats',      both(`<path d="M 73 105 Q 64 126 71 148 Q 80 162 93 154 L 93 102 Q 81 97 73 105 Z"/>`)) +
+    R('lowerBack', `<path d="M 82 154 Q 100 149 118 154 L 121 192 Q 100 198 79 192 Z"/>`) +
+    R('triceps',   both(cap(55, 104, 48, 150, 16))) +
+    R('forearms',  both(cap(45, 178, 38, 226, 13))) +
+    R('glutes',    both(`<path d="M 70 198 Q 63 218 74 231 Q 91 237 98 222 L 98 200 Q 85 191 70 198 Z"/>`)) +
+    R('hamstrings',both(cap(83, 250, 79, 310, 26))) +
+    R('abductors', both(cap(70, 240, 68, 280, 10))) +
+    R('adductors', both(cap(95, 254, 93, 296, 11))) +
+    R('calves',    both(cap(77, 340, 80, 388, 20)));
+
+  return `<g transform="translate(${side === 'front' ? 0 : 240},0)">
+    ${body}${side === 'front' ? front : back}
+    <text class="mm-caption" x="100" y="442" text-anchor="middle">${side === 'front' ? 'FAȚĂ' : 'SPATE'}</text>
+  </g>`;
+}
+
+/* -------------- STARE & STOCARE -------------- */
+const MM_KEY = 'gymMuscleDays'; // { 'YYYY-MM-DD': ['chest','biceps', ...] }
+
+function getMMDays() { return JSON.parse(localStorage.getItem(MM_KEY) || '{}'); }
+function saveMMDays(d) { localStorage.setItem(MM_KEY, JSON.stringify(d)); }
+
+let mmDate = null; // null = ziua de azi
+function mmActiveDate() { return mmDate ? mmDate : atMidnight(new Date()); }
+function mmSelection(iso) {
+  const a = getMMDays()[iso];
+  return Array.isArray(a) ? a.filter(g => GROUP_BY_ID[g]) : [];
+}
+
+// Cheile de progres încep cu „mm”, deci nu se ating de `w{N}d...` —
+// nici bara de progres a săptămânii, nici „Reset Săptămână” nu le văd.
+function mmSetKey(iso, exId, s) { return `mm${iso}_${exId}s${s}`; }
+
+/* Săptămâna de program a unei date oarecare (0-based, se rotește după 12). */
+function mmWeekRaw(d) {
+  const diff = atMidnight(d) - programStartMonday();
+  return Math.max(0, Math.floor(diff / (7 * 24 * 3600 * 1000)));
+}
+
+/* Construiește sesiunea pentru grupele alese. Rotația săptămânală: pornim
+   din alt exercițiu al fiecărei grupe în fiecare săptămână, iar seturile /
+   repetările / pauzele vin din faza săptămânii respective. */
+function mmSession(groupIds, weekRaw) {
+  const wi = weekRaw % WEEK_SCHEME.length;
+  const w = WEEK_SCHEME[wi], ph = PHASES[w.phase];
+  const ids = groupIds.slice().sort((a, b) => GROUP_BY_ID[a].prio - GROUP_BY_ID[b].prio);
+  const perGroup = ids.length <= 2 ? 3 : ids.length <= 4 ? 2 : 1;
+  const list = [], used = new Set();
+
+  ids.forEach((gid, gi) => {
+    const pool = GROUP_BY_ID[gid].ex;
+    const picked = [];
+    for (let k = 0; k < pool.length && picked.length < perGroup; k++) {
+      const id = pool[(weekRaw + k) % pool.length];
+      if (used.has(id)) continue; // exercițiu deja luat de o grupă vecină
+      used.add(id);
+      picked.push(id);
+    }
+    // Rotația decide CARE exerciții intră; ordinea din bibliotecă decide în ce
+    // ordine le faci — compus întâi, izolare la final, nu invers.
+    picked.sort((a, b) => pool.indexOf(a) - pool.indexOf(b));
+    picked.forEach((id, taken) => {
+      const role = (gi === 0 && taken === 0) ? 'main' : (taken <= 1 ? 'sec' : 'iso');
+      const p = ph.params[role];
+      list.push({
+        ...EX[id], id, group: gid, role, phase: w.phase,
+        sets: Math.max(2, p.sets + w.delta[role]),
+        reps: p.reps, rest: `${p.rest}s`, restSec: p.rest
+      });
+    });
+  });
+  return { list, ids, weekIdx: wi, weekRaw, phase: ph, scheme: w };
+}
+
+function mmGroupExercises(gid, list) {
+  const pool = GROUP_BY_ID[gid].ex;
+  return list.filter(e => pool.includes(e.id));
+}
+function mmGroupDone(gid, list, iso, progress) {
+  const exs = mmGroupExercises(gid, list);
+  if (!exs.length) return false;
+  return exs.every(e => {
+    for (let s = 1; s <= e.sets; s++) if (!progress[mmSetKey(iso, e.id, s)]) return false;
+    return true;
+  });
+}
+function mmCountSets(list, iso, progress) {
+  let total = 0, done = 0;
+  list.forEach(e => {
+    total += e.sets;
+    for (let s = 1; s <= e.sets; s++) if (progress[mmSetKey(iso, e.id, s)]) done++;
+  });
+  return { total, done };
+}
+// ~45 secunde de lucru pe serie, plus pauza exercițiului.
+function mmMinutes(list) {
+  const sec = list.reduce((t, e) => t + e.sets * (45 + e.restSec), 0);
+  return Math.round(sec / 60);
+}
+
+/* -------------- ACȚIUNI -------------- */
+function toggleMuscleGroup(gid) {
+  if (!GROUP_BY_ID[gid]) return;
+  const iso = isoKey(mmActiveDate());
+  const days = getMMDays();
+  const cur = mmSelection(iso);
+  const i = cur.indexOf(gid);
+  if (i >= 0) cur.splice(i, 1); else cur.push(gid);
+  if (cur.length) days[iso] = cur; else delete days[iso];
+  saveMMDays(days);
+  renderMuscle();
+}
+
+function toggleMuscleSet(btn) {
+  const key = btn.dataset.key;
+  const progress = getProgress();
+  if (progress[key]) {
+    delete progress[key];
+    btn.classList.remove('done');
+    btn.innerHTML = btn.dataset.off || '✓';
+  } else {
+    progress[key] = true;
+    btn.classList.add('done');
+    btn.innerHTML = '&#10003;';
+  }
+  saveProgress(progress);
+  mmPaint(); // doar culorile hărții — fără re-randare, ca să nu sară pagina
+}
+
+function mmResetExercise(exId, sets) {
+  const iso = isoKey(mmActiveDate());
+  const progress = getProgress(), weights = getWeights();
+  for (let s = 1; s <= sets; s++) delete progress[mmSetKey(iso, exId, s)];
+  delete weights[`mmlast_${iso}_${exId}`];
+  saveProgress(progress);
+  saveWeights(weights);
+  renderMuscle();
+}
+
+function mmClearDay() {
+  const iso = isoKey(mmActiveDate());
+  if (!mmSelection(iso).length) return;
+  if (!confirm('Golești ziua? Se șterg grupele alese și seturile bifate pentru această dată.')) return;
+  const days = getMMDays();
+  delete days[iso];
+  saveMMDays(days);
+  const progress = getProgress();
+  Object.keys(progress).forEach(k => { if (k.startsWith(`mm${iso}_`)) delete progress[k]; });
+  saveProgress(progress);
+  renderMuscle();
+}
+
+function mmGoDay(delta) {
+  mmDate = addDays(mmActiveDate(), delta);
+  renderMuscle();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function mmToday() { mmDate = null; renderMuscle(); }
+function mmJumpTo(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  mmDate = atMidnight(new Date(y, m - 1, d));
+  renderMuscle();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// `scroll-margin-top` (în CSS) ține secțiunea sub header-ul lipicios.
+function mmGoToExercises() {
+  const el = document.getElementById('mmSession');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* Recolorează harta, pastilele și titlurile fără să reconstruiască ecranul. */
+function mmPaint() {
+  const iso = isoKey(mmActiveDate());
+  const sel = mmSelection(iso);
+  const s = mmSession(sel, mmWeekRaw(mmActiveDate()));
+  const progress = getProgress();
+
+  const doneGroups = new Set(sel.filter(g => mmGroupDone(g, s.list, iso, progress)));
+  document.querySelectorAll('#muscleView [data-g]').forEach(el => {
+    const g = el.dataset.g;
+    const isSel = sel.includes(g);
+    el.classList.toggle('sel', isSel && !doneGroups.has(g));
+    el.classList.toggle('done', doneGroups.has(g));
+  });
+  document.querySelectorAll('#muscleView [data-glabel]').forEach(el => {
+    el.classList.toggle('done', doneGroups.has(el.dataset.glabel));
+  });
+
+  const c = mmCountSets(s.list, iso, progress);
+  const cnt = document.getElementById('mmSetsCount');
+  if (cnt) cnt.textContent = `${c.done} / ${c.total} seturi completate`;
+  const head = document.getElementById('mmSessionHead');
+  if (head) {
+    const all = sel.length > 0 && doneGroups.size === sel.length;
+    head.classList.toggle('is-done', all);
+    const t = document.getElementById('mmSessionTitle');
+    if (t) t.textContent = all ? '✅ Sesiune terminată' : '🔥 Exercițiile zilei';
+  }
+}
+
+/* -------------- RANDARE -------------- */
+function mmExerciseCard(ex, iso, weekIdx, progress, weights) {
+  const wKey = `${iso}_${ex.id}`;
+  let sets = '';
+  for (let s = 1; s <= ex.sets; s++) {
+    const k = mmSetKey(iso, ex.id, s);
+    const done = progress[k] ? ' done' : '';
+    sets += `<button class="set-check${done}" data-key="${k}" data-off="${s}" onclick="toggleMuscleSet(this)">${done ? '&#10003;' : s}</button>`;
+  }
+  return `<div class="exercise-card">
+    <div class="exercise-top">
+      <div class="muscle-img">${muscleSVGs[ex.svg] || ''}</div>
+      <div class="exercise-info">
+        <div class="muscle-name">${ex.muscle}</div>
+        <h3>${ex.name}</h3>
+        <div class="sets-reps">
+          <span class="badge sets">${ex.sets} Seturi</span>
+          <span class="badge reps">${ex.reps} Reps</span>
+          <span class="badge rest">Pauză ${ex.rest}</span>
+          <span class="badge weight" title="Recomandare calculată din greutatea ta de referință și săptămâna curentă">
+            🎯 ${fmtKg(recommendedKg(ex, weekIdx))} kg
+            <button class="badge-edit" onclick="editBase('${ex.id}', ${getExerciseBase(ex)})" title="Schimbă greutatea de referință">&#9998;</button>
+          </span>
+        </div>
+      </div>
+      <div class="hoist-panel">
+        <div class="hoist-brand">HOIST&reg;</div>
+        <div class="hoist-name">${ex.hoist}</div>
+        <a class="hoist-btn" href="https://www.hoistfitness.com/products/${ex.handle}" target="_blank" rel="noopener">Vezi aparatul &#8599;</a>
+        <a class="video-btn" href="https://www.youtube.com/results?search_query=${encodeURIComponent(ex.name + ' exercise proper form technique')}" target="_blank" rel="noopener">&#9654; Video execuție</a>
+      </div>
+    </div>
+    <div class="exercise-note">${ex.note}</div>
+    ${ex.alt ? `<div class="alt-row">
+      <span class="alt-equip">${ex.alt.equip === 'Kettlebell' ? '🔔' : '🏋'} ${ex.alt.equip}</span>
+      <div class="alt-body">
+        <div class="alt-name">${ex.alt.name}
+          <a class="alt-video" href="https://www.youtube.com/results?search_query=${encodeURIComponent(ex.alt.name + ' proper form technique')}" target="_blank" rel="noopener">&#9654; video</a>
+        </div>
+        <div class="alt-note">${ex.alt.note}</div>
+      </div>
+    </div>` : ''}
+    <div class="weight-row">
+      <div class="weight-box start">
+        <span class="weight-label">🚀 Start (kg)</span>
+        ${buildWeightSelect(`mmstart_${wKey}`, weights[`mmstart_${wKey}`])}
+      </div>
+      <div class="weight-box last">
+        <span class="weight-label">🏁 Ultima serie (kg)</span>
+        ${buildWeightSelect(`mmlast_${wKey}`, weights[`mmlast_${wKey}`])}
+      </div>
+    </div>
+    <div class="progress-row">
+      ${sets}
+      <button class="rest-btn" onclick="startRest(${ex.restSec}, '${ex.name.replace(/'/g, "\\'")}')">&#9201; Pornire pauză ${ex.rest}</button>
+      <button class="ex-reset-btn" onclick="mmResetExercise('${ex.id}', ${ex.sets})" title="Resetează seturile și ultima serie">&#x21bb; Reset exercițiu</button>
+    </div>
+  </div>`;
+}
+
+function renderMuscle() {
+  const view = document.getElementById('muscleView');
+  const d = mmActiveDate();
+  const iso = isoKey(d);
+  const isToday = iso === isoKey(new Date());
+  const sel = mmSelection(iso);
+  const weekRaw = mmWeekRaw(d);
+  const s = mmSession(sel, weekRaw);
+  const progress = getProgress(), weights = getWeights();
+  const weekday = d.toLocaleDateString('ro-RO', { weekday: 'long' });
+
+  let html = `<div class="mm-wrap">
+    <div class="mm-daybar">
+      <button class="mm-nav-btn" onclick="mmGoDay(-1)" title="Ziua anterioară">&#8249;</button>
+      <div class="mm-day-text">
+        ${weekday.charAt(0).toUpperCase() + weekday.slice(1)}, ${fmtDMY(d)}${isToday ? '<span class="mm-day-badge">AZI</span>' : ''}
+        <span class="mm-day-sub">Săptămâna ${s.weekIdx + 1} · ${s.phase.label.split('—')[0].trim()}${s.scheme.deload ? ' · deload' : ''}</span>
+      </div>
+      <button class="mm-nav-btn" onclick="mmGoDay(1)" title="Ziua următoare">&#8250;</button>
+      ${isToday ? '' : '<button class="mm-today-btn" onclick="mmToday()">Azi</button>'}
+    </div>
+
+    <div class="mm-intro">
+      Apasă pe mușchii pe care vrei să-i lucrezi în ziua asta. Ce alegi rămâne salvat pe <b>${fmtDMY(d)}</b>.
+    </div>
+
+    <div class="mm-map">
+      <svg viewBox="0 0 440 452" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Hartă musculară — față și spate">
+        ${mmFigure('front')}${mmFigure('back')}
+      </svg>
+    </div>
+
+    <div class="mm-legend">
+      <span><i style="background:#34345a"></i> Netargetat</span>
+      <span><i style="background:#ff9800"></i> De lucrat azi</span>
+      <span><i style="background:#4fc3f7"></i> Terminat</span>
+    </div>`;
+
+  MUSCLE_CATS.forEach(cat => {
+    const groups = MUSCLE_GROUPS.filter(g => g.cat === cat.name);
+    html += `<div class="mm-cat">
+      <div class="mm-cat-title">${cat.icon} ${cat.name}</div>
+      <div class="mm-chips">
+        ${groups.map(g => {
+          const on = sel.includes(g.id);
+          const done = on && mmGroupDone(g.id, s.list, iso, progress);
+          return `<button class="mm-chip${done ? ' done' : (on ? ' sel' : '')}" data-g="${g.id}" onclick="toggleMuscleGroup('${g.id}')">
+            ${g.name}<span class="mm-chip-n">${g.ex.length} ex.</span>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>`;
+  });
+
+  const cnt = mmCountSets(s.list, iso, progress);
+  html += `<div class="mm-actions">
+    <button class="mm-go-btn" onclick="mmGoToExercises()"${sel.length ? '' : ' disabled'}>
+      ${sel.length ? `&#9654; Vezi exercițiile (${s.list.length})` : 'Alege cel puțin o grupă'}
+    </button>
+    ${sel.length ? '<button class="mm-clear-btn" onclick="mmClearDay()">&#10005; Golește ziua</button>' : ''}
+  </div>
+
+  <div id="mmSession">`;
+
+  if (!sel.length) {
+    html += `<div class="mm-empty">
+      Nicio grupă aleasă pentru ${fmtDMY(d)}.<br>
+      Apasă pe mușchi în hartă (sau pe pastilele de mai sus) și exercițiile apar aici.
+    </div>`;
+  } else {
+    const allDone = sel.every(g => mmGroupDone(g, s.list, iso, progress));
+    html += `<div class="mm-session-head${allDone ? ' is-done' : ''}" id="mmSessionHead">
+      <h2 id="mmSessionTitle">${allDone ? '✅ Sesiune terminată' : '🔥 Exercițiile zilei'}</h2>
+      <div class="mm-sh-groups">${s.ids.map(g => GROUP_BY_ID[g].name).join(' · ')}</div>
+      <div class="mm-sh-meta">⏱ ~${mmMinutes(s.list)} min · <span id="mmSetsCount">${cnt.done} / ${cnt.total} seturi completate</span></div>
+      <div class="mm-sh-rotate">🔁 Selecție pentru săptămâna ${s.weekIdx + 1}: ${s.scheme.deload ? 'săptămână de deload — volum redus' : `${s.phase.params.main.reps} repetări pe exercițiile principale`}. Săptămâna viitoare, aceleași grupe îți dau alte exerciții.</div>
+      <div class="mm-sh-rotate">🔥 Fă întâi încălzirea din ecranul „Antrenament”, iar la final rutina pentru coloană.</div>
+    </div>`;
+
+    let lastGroup = null;
+    s.list.forEach(ex => {
+      if (ex.group !== lastGroup) {
+        lastGroup = ex.group;
+        const gdone = mmGroupDone(ex.group, s.list, iso, progress);
+        html += `<div class="mm-group-label${gdone ? ' done' : ''}" data-glabel="${ex.group}">${GROUP_BY_ID[ex.group].name}</div>`;
+      }
+      html += mmExerciseCard(ex, iso, s.weekIdx, progress, weights);
+    });
+  }
+  html += `</div>`;
+
+  // Istoric: zilele în care ai folosit harta, cea mai recentă prima.
+  const days = getMMDays();
+  const hist = Object.keys(days).filter(k => k !== iso).sort().reverse().slice(0, 8);
+  if (hist.length) {
+    html += `<div class="mm-history"><h3>📅 Zile salvate</h3>`;
+    hist.forEach(k => {
+      const [y, m, dd] = k.split('-');
+      const hs = mmSession(mmSelection(k), mmWeekRaw(new Date(+y, +m - 1, +dd)));
+      const gs = mmSelection(k);
+      const done = gs.length && gs.every(g => mmGroupDone(g, hs.list, k, progress));
+      html += `<div class="mm-hist-row" onclick="mmJumpTo('${k}')">
+        <span class="mm-hist-date">${dd}/${m}/${y}</span>
+        <span class="mm-hist-groups">${gs.map(g => GROUP_BY_ID[g].name).join(', ')}</span>
+        <span class="mm-hist-state ${done ? 'done' : 'open'}">${done ? 'terminat' : 'neterminat'}</span>
+      </div>`;
+    });
+    html += `</div>`;
+  }
+
+  html += `</div>`;
+  view.innerHTML = html;
+
+  // Harta e desenată o dată; stările (portocaliu / albastru) le pune mmPaint.
+  view.querySelectorAll('.mg').forEach(el => {
+    el.addEventListener('click', () => toggleMuscleGroup(el.dataset.g));
+  });
+  mmPaint();
+}
+
 /* -------------- VIEW SWITCH -------------- */
 const viewTrainingBtn = document.getElementById('viewTrainingBtn');
 const viewHabitsBtn = document.getElementById('viewHabitsBtn');
 const viewRunBtn = document.getElementById('viewRunBtn');
 const viewFoodBtn = document.getElementById('viewFoodBtn');
+const viewMuscleBtn = document.getElementById('viewMuscleBtn');
 
 function showView(v) {
-  const view = ['training', 'run', 'food', 'habits'].includes(v) ? v : 'training';
+  const view = ['training', 'muscle', 'run', 'food', 'habits'].includes(v) ? v : 'training';
   document.getElementById('trainingView').style.display = view === 'training' ? '' : 'none';
+  document.getElementById('muscleView').style.display = view === 'muscle' ? '' : 'none';
   document.getElementById('runView').style.display = view === 'run' ? '' : 'none';
   document.getElementById('foodView').style.display = view === 'food' ? '' : 'none';
   document.getElementById('habitsView').style.display = view === 'habits' ? '' : 'none';
   document.querySelector('footer').style.display = view === 'training' ? '' : 'none';
   viewTrainingBtn.classList.toggle('active', view === 'training');
+  viewMuscleBtn.classList.toggle('active', view === 'muscle');
   viewRunBtn.classList.toggle('active', view === 'run');
   viewFoodBtn.classList.toggle('active', view === 'food');
   viewHabitsBtn.classList.toggle('active', view === 'habits');
   localStorage.setItem('activeView', view);
   if (view === 'training') measureSticky();
+  else if (view === 'muscle') renderMuscle();
   else if (view === 'run') renderRun();
   else if (view === 'food') renderFood();
   else renderHabits();
 }
 viewTrainingBtn.onclick = () => showView('training');
+viewMuscleBtn.onclick = () => showView('muscle');
 viewRunBtn.onclick = () => showView('run');
 viewFoodBtn.onclick = () => showView('food');
 viewHabitsBtn.onclick = () => showView('habits');
@@ -2971,7 +3579,8 @@ function refreshAll() {
   buildWeekPills();
   render();
   const v = localStorage.getItem('activeView');
-  if (v === 'run') renderRun();
+  if (v === 'muscle') renderMuscle();
+  else if (v === 'run') renderRun();
   else if (v === 'food') renderFood();
   else if (v === 'habits') renderHabits();
 }
@@ -3007,6 +3616,7 @@ document.addEventListener('visibilitychange', () => {
   if (v === 'habits') renderHabits();
   else if (v === 'run') renderRun();
   else if (v === 'food') renderFood();
+  else if (v === 'muscle') renderMuscle();
 });
 
 /* -------------- BOOTSTRAP -------------- */
