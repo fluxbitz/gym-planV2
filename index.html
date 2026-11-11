@@ -2115,15 +2115,12 @@ function programDayNumber() {
   return Math.floor(diff / (24 * 3600 * 1000)) + 1;
 }
 
-// Pas de 1 kg — include și valorile impare (1, 3, 11, 21, 23 kg …),
-// plus jumătățile de kg la gantere ușoare și jumătățile de placă (2,5 / 7,5 …).
+// Doar kilograme ÎNTREGI — fără jumătăți de măsură (nu sunt la sală).
+// Include și valorile impare (1, 3, 11, 21, 23 kg …).
 const WEIGHT_OPTIONS = (() => {
   const set = new Set();
-  for (let kg = 0.5; kg <= 10; kg += 0.5) set.add(kg);   // gantere ușoare, pas 0,5 kg
-  for (let kg = 1;   kg <= 60; kg += 1)   set.add(kg);   // pas 1 kg → și impare
-  for (let kg = 2.5; kg <= 60; kg += 2.5) set.add(kg);   // jumătăți de placă (12,5 / 17,5 …)
-  for (let kg = 62.5; kg <= 120; kg += 2.5) set.add(kg); // bară grea, pas 2,5 kg
-  for (let kg = 125; kg <= 200; kg += 5)  set.add(kg);   // foarte grea, pas 5 kg
+  for (let kg = 1;   kg <= 100; kg += 1) set.add(kg);  // pas 1 kg → întregi, și impare
+  for (let kg = 105; kg <= 200; kg += 5) set.add(kg);  // foarte grea, pas 5 kg
   return [...set].sort((a, b) => a - b);
 })();
 
@@ -2144,8 +2141,8 @@ function getExerciseBase(ex) {
 }
 function recommendedKg(ex, weekIdx) {
   const raw = getExerciseBase(ex) * PHASE_LOAD[ex.phase] * WEEK_LOAD[weekIdx % 4];
-  const step = ex.step || 2.5;
-  return Math.max(step, Math.round(raw / step) * step);
+  // Rotunjit la kg întreg — fără jumătăți de măsură (nu sunt la sală).
+  return Math.max(1, Math.round(raw));
 }
 function fmtKg(v) {
   return (Math.round(v * 10) / 10).toString().replace('.', ',');
